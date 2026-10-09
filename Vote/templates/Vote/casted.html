@@ -14,11 +14,41 @@
         <p class="eyebrow mt-3">Your ballot ID</p>
         <div style="font-family:var(--font-display);font-size:1.6rem;font-weight:700;letter-spacing:.05em">{{ public_id }}</div>
         <p class="eyebrow mt-3">Your full receipt</p>
-        <div class="receipt">{{ receipt }}</div>
+        <div class="receipt" id="receipt-text">{{ receipt }}</div>
+        <p class="muted mt-2" style="font-size:.85rem">Downloading your receipt…</p>
         <div class="row mt-3" style="justify-content:center">
-          <a class="btn btn--primary" href="{% url 'Vote:verify_ballot' %}">Verify this receipt</a>
+          <button type="button" class="btn btn--primary" id="download">Download receipt</button>
+          <a class="btn btn--ghost" href="{% url 'Vote:verify_ballot' %}">Verify this receipt</a>
           <a class="btn btn--ghost" href="{% url 'Vote:bulletin' %}">View public ledger</a>
         </div>
+
+        {{ receipt|json_script:"receipt-data" }}
+        <script>
+        (function () {
+          const receipt = JSON.parse(document.getElementById('receipt-data').textContent);
+          const publicId = "{{ public_id }}";
+          const text =
+            "Smart Voting System — Ballot Receipt\n" +
+            "====================================\n" +
+            "Ballot ID : " + publicId + "\n" +
+            "Receipt   : " + receipt + "\n\n" +
+            "Keep this. Enter the receipt on the Verify Vote page to confirm your\n" +
+            "ballot is on the public ledger. It does not reveal your choice.\n";
+          function download() {
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'smartvote-receipt-' + publicId + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 2000);
+          }
+          document.getElementById('download').addEventListener('click', download);
+          window.addEventListener('load', download);
+        })();
+        </script>
       {% else %}
         <p class="pill pill--light mt-3">A receipt is shown only once, immediately after casting.</p>
       {% endif %}

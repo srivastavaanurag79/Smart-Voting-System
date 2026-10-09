@@ -21,6 +21,7 @@ election's public key and appended to a tamper-evident, blockchain-style ledger.
 - [Project layout](#project-layout)
 - [Quick start](#quick-start)
 - [Demo accounts](#demo-accounts)
+- [Viewing the database](#viewing-the-database)
 - [Manual testing](#manual-testing)
 - [URL reference](#url-reference)
 - [Configuration](#configuration)
@@ -201,6 +202,38 @@ Created by `python manage.py seed_demo`.
 These are demo credentials. The original committed `user_pass` file with
 plaintext passwords has been removed; change every password before any real
 use.
+
+---
+
+## Viewing the database
+
+SQLite is a single file (`db.sqlite3`) with **no login** — there are no
+credentials to enter. Four ways to inspect it:
+
+**1. Django admin (recommended).** Open <http://127.0.0.1:8000/admin/> and log in
+as the superuser `thesrivas` / `thesri1234`. Browse Election, Position,
+Candidate, UserProfile, Ballot, BallotToken and VoterBallotRecord. Ballot
+payloads appear as ciphertext, exactly as stored.
+
+**2. Django shell.**
+```powershell
+.\.venv\Scripts\python.exe manage.py shell
+```
+```python
+from Vote.models import Election, UserProfile, Ballot
+Election.objects.all()
+UserProfile.objects.values("id", "voted", "aadhaar_verified", "biometric_verified")
+Ballot.objects.first().encrypted_payload   # ciphertext, not the vote
+```
+
+**3. DB Browser for SQLite (GUI).** Install it and open
+`C:\Users\sriva\vedifie\personal\Smart-Voting-System\db.sqlite3`.
+
+**4. `sqlite3` CLI** (if installed): `sqlite3 db.sqlite3`, then `.tables` and
+e.g. `SELECT index, receipt_hash FROM Vote_ballot;`.
+
+Configuration: the DB path can be overridden with the `DJANGO_DB_PATH`
+environment variable (default `db.sqlite3`).
 
 ---
 

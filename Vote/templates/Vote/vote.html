@@ -17,12 +17,12 @@
       </div>
     {% endif %}
 
-    <form method="post" action="{% url 'Vote:vote' %}" class="mt-3">
+    <form method="post" action="{% url 'Vote:vote' %}" id="ballot-form" class="mt-3">
       {% csrf_token %}
       <input type="hidden" name="voting_token" value="{{ voting_token }}">
 
       {% for item in contests %}
-        <div class="panel reveal">
+        <div class="panel reveal" data-contest="{{ item.contest.position }}">
           <div class="panel__head">
             {{ item.contest.position }}
             <span class="muted" style="font-weight:400">· {{ item.candidates|length }} candidates</span>
@@ -30,7 +30,7 @@
           <div class="panel__body">
             {% if item.contest.about %}<p class="muted">{{ item.contest.about }}</p>{% endif %}
             {% for candidate in item.candidates %}
-              <label class="choice">
+              <label class="choice" data-name="{{ candidate.name }}">
                 {% if candidate.image %}<img src="{{ candidate.image.url }}" alt="{{ candidate.name }}">{% endif %}
                 <input type="radio" name="contest_{{ item.contest.id }}" value="{{ candidate.id }}" required>
                 <span class="choice__body">
@@ -46,10 +46,59 @@
       <div class="card mt-3" style="background:var(--ink);color:#c7cfe6;border-color:transparent">
         <div class="row row--between">
           <span class="pill"><span class="dot"></span> Encrypted before it leaves your browser</span>
-          <button type="submit" class="btn btn--accent btn--lg">Cast encrypted ballot</button>
+          <button type="button" id="review" class="btn btn--accent btn--lg">Review &amp; cast</button>
         </div>
       </div>
     </form>
   </div>
 </section>
+
+<div class="modal" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+  <div class="modal__box">
+    <span class="eyebrow">Confirm your ballot</span>
+    <h2 class="mt-1" id="confirm-title">Is this your final choice?</h2>
+    <p class="muted mb-0">Once cast, your ballot is encrypted and cannot be changed.</p>
+    <div class="modal__list" id="confirm-list"></div>
+    <div class="row row--between">
+      <button type="button" class="btn btn--ghost" id="cancel">Go back</button>
+      <button type="button" class="btn btn--primary btn--lg" id="confirm">Confirm &amp; cast</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById('ballot-form');
+const modal = document.getElementById('confirm-modal');
+const listEl = document.getElementById('confirm-list');
+
+document.getElementById('review').addEventListener('click', () => {
+  // Collect one selection per contest.
+  const panels = document.querySelectorAll('.panel[data-contest]');
+  const summary = [];
+  let missing = false;
+  panels.forEach(panel => {
+    const checked = panel.querySelector('input[type=radio]:checked');
+    if (!checked) {
+      missing = true;
+      panel.style.outline = '2px solid var(--danger)';
+      return;
+    }
+    panel.style.outline = '';
+    const label = checked.closest('.choice');
+    summary.push([panel.dataset.contest, label.dataset.name]);
+  });
+  if (missing) {
+    window.alert('Please select a candidate for every contest before casting.');
+    return;
+  }
+  listEl.innerHTML = summary.map(([k, v]) =>
+    '<div><span class="k">' + k + '</span><span class="v">' + v + '</span></div>').join('');
+  modal.classList.add('is-open');
+});
+
+document.getElementById('cancel').addEventListener('click', () => modal.classList.remove('is-open'));
+document.getElementById('confirm').addEventListener('click', () => form.submit());
+modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('is-open'); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('is-open'); });
+</script>
 {% endblock %}

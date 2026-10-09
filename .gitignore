@@ -15,6 +15,9 @@ keys/
 # Generated face-model artifacts (retrained on demand)
 ml/recognizer/
 
+# Runtime-enrolled face samples (personal biometric data - keep local)
+ml/dataset/
+
 # OS / editors
 .DS_Store
 Thumbs.db

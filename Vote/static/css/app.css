@@ -315,6 +315,16 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
 .cam video { display: block; width: 100%; }
 .cam__frame { position: absolute; inset: 12%; border: 2px dashed rgba(255,255,255,0.5); border-radius: 16px; pointer-events: none; }
 
+/* --- modal --------------------------------------------------------------- */
+.modal { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 1rem; background: rgba(10,14,26,0.55); }
+.modal.is-open { display: flex; }
+.modal__box { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-lg); width: 100%; max-width: 540px; padding: 1.6rem; max-height: 90vh; overflow: auto; }
+.modal__list { margin: 1rem 0; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.modal__list div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.6rem 0.9rem; }
+.modal__list div + div { border-top: 1px solid var(--line); }
+.modal__list .k { color: var(--muted); }
+.modal__list .v { font-weight: 600; }
+
 /* --- utilities ----------------------------------------------------------- */
 .row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
 .row--between { justify-content: space-between; }
