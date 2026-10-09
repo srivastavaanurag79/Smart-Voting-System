@@ -17,16 +17,21 @@ Demo logins (from `python manage.py seed_demo`): `guptaabhishek / gupta1234`
 - [ ] Wrong password → redirected to `/Vote/invalid/` with an error message.
 - [ ] `guptaabhishek / gupta1234` → logged in, redirected to the face step.
 
-## C. Aadhaar identity verification
+## C. Aadhaar identity verification (optional)
 
-- [ ] Visit `/Vote/aadhaar/`. Enter a valid 12-digit Aadhaar (see below); leave
-      OTP blank and submit → a mock OTP is shown.
-- [ ] Re-submit with that OTP and a biometric (face capture or a typed sample) →
-      success; the profile is marked verified.
-- [ ] Try an invalid number (e.g. `123456789012`) → rejected.
+Identity verification is optional in the demo — you can vote without it — but it
+strengthens the one-person-one-vote guarantee.
+
+- [ ] Visit `/Vote/aadhaar/`. The field is formatted `XXXX-XXXX-XXXX`.
+- [ ] Enter any 12-digit number (the mock accepts it even if it is not a real
+      Aadhaar); leave OTP blank and submit → a mock OTP is shown.
+- [ ] Re-submit with that OTP → success. A biometric is optional: capture one
+      (face) or type a sample (fingerprint/iris), or leave it blank.
+- [ ] Try a number that is not 12 digits → rejected with a clear message.
 - [ ] Try the same Aadhaar on a second account → rejected as already linked.
 
-Generate a valid demo Aadhaar:
+The mock provider is lenient by design. For reference, a number that passes the
+real Verhoeff checksum can be generated with:
 
 ```powershell
 .\.venv\Scripts\python.exe -c "import os;os.environ.setdefault('DJANGO_SETTINGS_MODULE','HCI.settings');import django;django.setup();from Vote import aadhaar;b='23456789012';print(next(b+str(c) for c in range(10) if aadhaar.is_valid_aadhaar(b+str(c))))"

@@ -54,6 +54,17 @@ class AadhaarTests(TestCase):
         self.assertFalse(aadhaar.is_valid_aadhaar("123456789012"))
         self.assertFalse(aadhaar.is_valid_aadhaar("012345678901"))
 
+    def test_plausible_format_is_accepting(self):
+        self.assertFalse(aadhaar.is_plausible_aadhaar("123"))
+        self.assertFalse(aadhaar.is_plausible_aadhaar("012345678901"))
+        self.assertTrue(aadhaar.is_plausible_aadhaar("2345 6789 0123"))
+
+    def test_mock_accepts_12_digit_number_without_verhoeff(self):
+        provider = aadhaar.get_provider()
+        number = "234567890123"  # 12 digits, no leading 0/1
+        result = provider.verify(number, otp=provider.expected_otp(number))
+        self.assertTrue(result.verified)
+
     def test_mock_provider_verifies_with_expected_otp(self):
         number = valid_aadhaar()
         provider = aadhaar.get_provider()
@@ -180,6 +191,16 @@ class VotingFlowTests(TestCase):
         response = self.client.get("/Vote/vote/")
         self.assertEqual(response.status_code, 302)
         self.assertIn("/voted/", response.url)
+
+    def test_vote_allowed_without_identity_verification(self):
+        # Aadhaar verification is optional: the vote page renders a notice but
+        # still allows casting.
+        self.profile.aadhaar_verified = False
+        self.profile.save(update_fields=["aadhaar_verified"])
+        self.client.force_login(self.user)
+        response = self.client.get("/Vote/vote/")
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context["identity_verified"])
 
     def test_public_pages_render(self):
         for url in [

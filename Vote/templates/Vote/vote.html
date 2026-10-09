@@ -9,6 +9,14 @@
     <p class="muted">Choose one candidate per contest. Your choices are encrypted
       before storage and can never be linked back to you.</p>
 
+    {% if not identity_verified %}
+      <div class="alert alert--info">
+        You have not verified your identity yet. You can still vote in this demo,
+        but <a href="{% url 'Vote:aadhaar_verify' %}">verifying with Aadhaar</a>
+        strengthens the one-person-one-vote guarantee.
+      </div>
+    {% endif %}
+
     <form method="post" action="{% url 'Vote:vote' %}" class="mt-3">
       {% csrf_token %}
       <input type="hidden" name="voting_token" value="{{ voting_token }}">

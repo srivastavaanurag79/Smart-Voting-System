@@ -220,11 +220,6 @@ def vote(request):
         return redirect("/Vote/home/")
 
     profile = get_profile(request.user)
-    if not profile.aadhaar_verified:
-        messages.info(
-            request, "Verify your Aadhaar identity (face/fingerprint/iris) before voting."
-        )
-        return redirect("Vote:aadhaar_verify")
     if profile.voted:
         return HttpResponseRedirect("/Vote/voted/")
 
@@ -237,6 +232,7 @@ def vote(request):
         "election": election,
         "contests": _contests(election),
         "voting_token": token,
+        "identity_verified": profile.aadhaar_verified,
     }
     return render(request, "Vote/vote.html", context)
 
@@ -440,14 +436,14 @@ def aadhaar_verify(request):
     }
 
     if request.method == "POST":
-        number = request.POST.get("aadhaar", "").replace(" ", "")
+        number = "".join(ch for ch in request.POST.get("aadhaar", "") if ch.isdigit())
         otp = request.POST.get("otp", None)
         modality = request.POST.get("modality", "face")
         biometric = request.POST.get("biometric", "")
 
         # Step 1 (demo): reveal the deterministic mock OTP for a valid number.
         if (otp is None or otp == "") and hasattr(provider, "expected_otp"):
-            if aadhaar_service.is_valid_aadhaar(number):
+            if aadhaar_service.is_plausible_aadhaar(number):
                 context["otp_hint"] = provider.expected_otp(number)
                 context["number"] = number
                 return render(request, "Vote/aadhaar_verify.html", context)
@@ -455,13 +451,20 @@ def aadhaar_verify(request):
         otp_result = provider.verify(number, otp=otp)
         if not otp_result.verified:
             messages.error(request, otp_result.message)
-            return render(request, "Vote/aadhaar_verify.html", context)
-
-        bio_result = provider.verify_biometric(number, modality, biometric)
-        if not bio_result.matched:
-            messages.error(request, f"Aadhaar OK but biometric failed: {bio_result.message}")
             context["number"] = number
             return render(request, "Vote/aadhaar_verify.html", context)
+
+        # Biometric is optional: verify only if a sample was captured.
+        biometric_ok = False
+        bio_message = "Biometric skipped."
+        if biometric:
+            bio_result = provider.verify_biometric(number, modality, biometric)
+            if not bio_result.matched:
+                messages.error(request, f"Aadhaar OK but biometric failed: {bio_result.message}")
+                context["number"] = number
+                return render(request, "Vote/aadhaar_verify.html", context)
+            biometric_ok = True
+            bio_message = bio_result.message
 
         identity_hash = crypto.hash_hex("aadhaar", number)
         # One Aadhaar identity can be attached to only one account.
@@ -477,7 +480,7 @@ def aadhaar_verify(request):
             return render(request, "Vote/aadhaar_verify.html", context)
 
         profile.aadhaar_verified = True
-        profile.biometric_verified = True
+        profile.biometric_verified = biometric_ok
         profile.identity_hash = identity_hash
         profile.aadhaar_encrypted = crypto.encrypt_pii(number)
         profile.save(
@@ -490,8 +493,8 @@ def aadhaar_verify(request):
         )
         messages.success(
             request,
-            f"{otp_result.message} {bio_result.message} "
-            f"Ref: {bio_result.reference_id or otp_result.reference_id}",
+            f"{otp_result.message} {bio_message} "
+            f"Ref: {otp_result.reference_id}",
         )
         return redirect("Vote:vote")
 

@@ -28,7 +28,9 @@
       <div class="field">
         <label for="aadhaar">Aadhaar number</label>
         <input type="text" id="aadhaar" name="aadhaar" value="{{ number|default:'' }}"
-               placeholder="12 digit Aadhaar number" inputmode="numeric" required>
+               class="mono" placeholder="XXXX-XXXX-XXXX" inputmode="numeric"
+               maxlength="14" autocomplete="off" oninput="formatAadhaar(this)">
+        <div class="help">12 digits, grouped 4-4-4. Stored encrypted, never in plaintext.</div>
       </div>
       <div class="field">
         <label for="otp">OTP</label>
@@ -73,6 +75,13 @@
 </section>
 
 <script>
+function formatAadhaar(el) {
+  const digits = el.value.replace(/\D/g, '').slice(0, 12);
+  el.value = digits.replace(/(.{4})/g, '$1-').replace(/-$/, '');
+}
+const aadhaarEl = document.getElementById('aadhaar');
+if (aadhaarEl && aadhaarEl.value) formatAadhaar(aadhaarEl);
+
 const modalityEl = document.getElementById('modality');
 const video = document.getElementById('video');
 const canvas = document.createElement('canvas');

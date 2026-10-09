@@ -12,6 +12,7 @@ Nothing here ever stores the raw Aadhaar number in plaintext: callers persist
 from __future__ import annotations
 
 import hashlib
+import re
 from dataclasses import dataclass
 
 from django.conf import settings
@@ -80,18 +81,34 @@ def _verhoeff_valid(number: str) -> bool:
     return c == 0
 
 
+def _digits(number: str) -> str:
+    return re.sub(r"\D", "", number or "")
+
+
 def is_valid_aadhaar(number: str) -> bool:
-    """Structural validation: 12 digits, no leading 0/1, valid Verhoeff check."""
-    number = (number or "").replace(" ", "")
-    if len(number) != 12 or not number.isdigit():
-        return False
-    if number[0] in "01":
+    """Strict validation: 12 digits, no leading 0/1, valid Verhoeff check.
+
+    Real Aadhaar numbers satisfy this. Used by tests and optional tooling.
+    """
+    number = _digits(number)
+    if len(number) != 12 or number[0] in "01":
         return False
     return _verhoeff_valid(number)
 
 
+def is_plausible_aadhaar(number: str) -> bool:
+    """Lenient validation used by the mock provider.
+
+    Accepts any 12-digit number that does not begin with 0. This keeps the demo
+    usable (a number that merely fails the Verhoeff checksum is still accepted),
+    while a real UIDAI provider would perform full validation server-side.
+    """
+    number = _digits(number)
+    return len(number) == 12 and number[0] != "0"
+
+
 def mask_aadhaar(number: str) -> str:
-    number = (number or "").replace(" ", "")
+    number = _digits(number)
     if len(number) != 12:
         return "XXXX-XXXX-XXXX"
     return f"XXXX-XXXX-{number[-4:]}"
@@ -108,8 +125,9 @@ class MockAadhaarProvider:
     name = "mock"
 
     def verify(self, number: str, otp: str | None = None, name: str = "") -> VerificationResult:
-        if not is_valid_aadhaar(number):
-            return VerificationResult(False, message="Invalid Aadhaar number format.")
+        number = _digits(number)
+        if not is_plausible_aadhaar(number):
+            return VerificationResult(False, message="Enter a valid 12-digit Aadhaar number.")
         # In mock mode the demo OTP is derived from the number so tests are
         # deterministic without any external service.
         expected = _mock_otp(number)
@@ -134,8 +152,8 @@ class MockAadhaarProvider:
         biometrics from Aadhaar enrolment. This method only lets the offline
         demo simulate a 1:1 match.
         """
-        if not is_valid_aadhaar(number):
-            return BiometricResult(False, message="Invalid Aadhaar number format.")
+        if not is_plausible_aadhaar(number):
+            return BiometricResult(False, message="Enter a valid 12-digit Aadhaar number.")
         if modality not in BIOMETRIC_MODALITIES:
             return BiometricResult(False, message=f"Unsupported modality '{modality}'.")
         if not sample:
@@ -152,8 +170,8 @@ class MockAadhaarProvider:
         Returns only whether the captured biometric matches the record held for
         that Aadhaar. The biometric itself is never persisted by the caller.
         """
-        if not is_valid_aadhaar(number):
-            return BiometricResult(False, message="Invalid Aadhaar number format.")
+        if not is_plausible_aadhaar(number):
+            return BiometricResult(False, message="Enter a valid 12-digit Aadhaar number.")
         if modality not in BIOMETRIC_MODALITIES:
             return BiometricResult(False, message=f"Unsupported modality '{modality}'.")
         if not sample:
