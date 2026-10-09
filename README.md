@@ -153,6 +153,14 @@ python run.py
 seeds demo data and starts the server. Options: `--host`, `--port`, `--no-seed`,
 `--setup-only`.
 
+> **The database is created automatically.** `db.sqlite3` is runtime state and is
+> **not** in the repository, so a fresh clone has none. `python run.py` (and the
+> Docker/Procfile commands) run `migrate` + `seed_demo` for you, so the DB is
+> created on first run with all tables and demo data — no ballots, all counts
+> zero. A bare `python manage.py runserver` does **not** auto-migrate; if you
+> start that way, run `python manage.py migrate && python manage.py seed_demo`
+> first. To reset, delete `db.sqlite3` and repeat those two commands.
+
 ### Manual
 
 ```powershell
@@ -234,6 +242,10 @@ e.g. `SELECT index, receipt_hash FROM Vote_ballot;`.
 
 Configuration: the DB path can be overridden with the `DJANGO_DB_PATH`
 environment variable (default `db.sqlite3`).
+
+`db.sqlite3` is **runtime state and is not version-controlled**. A fresh clone
+starts clean (no ballots, all counts zero). To reset your local copy, delete
+`db.sqlite3`, then run `python manage.py migrate && python manage.py seed_demo`.
 
 ---
 
