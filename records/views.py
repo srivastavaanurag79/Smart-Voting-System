@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from django.shortcuts import get_object_or_404, render
+
 from .models import Records
-from django.shortcuts import render
-from django.http import HttpResponse
-# Create your views here.
+
 
 def details(request, id):
-    record = Records.objects.get(id=id)
-    context = {
-        'record' : record
-    }
-    return render(request, 'details.html', context)
+    record = get_object_or_404(Records, id=id)
+    return render(request, "details.html", {"record": record})

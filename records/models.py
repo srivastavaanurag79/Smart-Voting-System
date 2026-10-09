@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from datetime import datetime
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 class Records(models.Model):
@@ -15,7 +15,7 @@ class Records(models.Model):
     occupation = models.CharField(max_length=150, null=True)
     marital_status = models.CharField(max_length=50, null=True)
     bio = models.TextField()
-    recorded_at = models.DateTimeField(default=datetime.now, blank=True)
+    recorded_at = models.DateTimeField(default=timezone.now, blank=True)
     image = models.ImageField(upload_to='Vote/static/img', blank=True)
 
     def __str__(self):

@@ -61,15 +61,23 @@ footer .glyphicon {
 <div class="form_l1" align="center">LOGIN FORM</div>
 <div class="form_div" align="center">
 <p class="form_label1">Enter your Login Credentials:</p>
-<form method="post" action="Vote/login/">{% csrf_token %}
+{% if messages %}
+  {% for message in messages %}
+    <p class="text-danger"><strong>{{ message }}</strong></p>
+  {% endfor %}
+{% endif %}
+<form method="post" action="{% url 'Vote:login' %}">{% csrf_token %}
 
     <b>Username:</b> <input type="text" name="username" placeholder="Enter Username" value=""/>
     <b>Password:</b> <input type="password" name="password" placeholder="Enter Password" value=""/>
     </br>
     </br>
-    <a href="{% url 'Vote:vote' %}"> <input type="submit" name="submit" /></a>
+    <input type="submit" name="submit" value="Log In" />
 
 </form>
+<p style="margin-top:1em">
+  or <a href="{% url 'Vote:face_login' %}">sign in with your face</a>
+</p>
 </div>
 </div>
 </div>

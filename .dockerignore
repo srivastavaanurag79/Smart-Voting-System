@@ -1,0 +1,10 @@
+.venv/
+.git/
+__pycache__/
+*.pyc
+db.sqlite3
+keys/
+media/
+staticfiles/
+.env
+article.md

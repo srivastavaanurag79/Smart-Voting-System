@@ -21,7 +21,9 @@ box-shadow:         0px 0px 14px 0px rgba(50, 50, 50, 0.5);">
         <div class="col-md-5">
           <div class="row">
             <div class="col-md-8 col-md-offset-2">
-              <img src="{% static '' %}img/{{record.id}}.jpg" class="img-responsive" style="border-radius:50%"/>
+              {% if record.image %}
+                <img src="{{ record.image.url }}" class="img-responsive" style="border-radius:50%"/>
+              {% endif %}
             </div>
             <div class="col-md-12" style="text-align:center">
               <h3 style="color:#d18f02"><b>{{record.first_name}} {{record.last_name}}</b></h3>

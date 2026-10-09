@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Public Ledger{% endblock %}
+{% block content %}
+<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
+  <h1 class="text-center">Public Bulletin Board</h1>
+  <p class="text-center">
+    Every ballot is appended to a hash-chained ledger. Each row commits to the
+    previous one, so any change to history is detectable.
+  </p>
+
+  <p class="text-center">
+    Ledger integrity:
+    {% if chain_valid %}
+      <span class="label label-success">valid</span>
+    {% else %}
+      <span class="label label-danger">BROKEN</span>
+    {% endif %}
+    &middot; {{ chain|length }} ballot(s)
+  </p>
+
+  <table class="table table-striped">
+    <thead>
+      <tr><th>#</th><th>Receipt</th><th>Previous hash</th><th>Entry hash</th><th>Time</th></tr>
+    </thead>
+    <tbody>
+      {% for block in chain %}
+        <tr>
+          <td>{{ block.index }}</td>
+          <td><code>{{ block.receipt_hash|slice:":16" }}…</code></td>
+          <td><code>{{ block.prev_hash|slice:":16" }}…</code></td>
+          <td><code>{{ block.entry_hash|slice:":16" }}…</code></td>
+          <td>{{ block.created_at }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="text-center">No ballots yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="text-center"><a href="{% url 'Vote:verify_ballot' %}">Verify your receipt</a></p>
+</div>
+{% endblock %}

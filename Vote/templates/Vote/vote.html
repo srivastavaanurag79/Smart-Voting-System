@@ -1,117 +1,50 @@
-<!doctype html>
-<html>
+{% extends 'layout.html' %}
 {% load static %}
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, iniital-scale=1;">
-<title>Vote</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% block title %}Cast your Vote{% endblock %}
+{% block content %}
+<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
+  <h1 class="text-center">{{ election.name }}</h1>
+  <p class="text-center">
+    Your choices are encrypted before they are stored and can never be linked
+    back to you.
+  </p>
 
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'Vote/voting_area.css' %}">
-    <style>
-footer .glyphicon {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #f4511e;
-}
-.navbar-brand{
-  float: none;
-</style>
-</head>
-<body>
+  <form method="post" action="{% url 'Vote:vote' %}">
+    {% csrf_token %}
+    <input type="hidden" name="voting_token" value="{{ voting_token }}">
 
- <nav class="navbar navbar-default navbar-fixed-top">
-     <div class="container-fluid">
-       <div class=" navbar-header">
-           <img src="{% static 'Vote/2018-06-11.png' %}" alt="some text" width=150 height=50>
-           <a class="navbar-brand" href="#">Smart voting System</a>
-       </div>
-      <ul class="nav navbar-nav">
-       <li><a href="{% url 'Vote:home' %}">Home</a></li>
-       <li class="active"><a href="{% url 'Vote:vote' %}">Vote</a></li>
-       <li><a href="{% url 'Vote:results' %}">Results</a> </li>
-	   <li><a href ="{% url 'Vote:about' %}">About</a></li>
-	   <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">English
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Hindi</a></li>
-        </ul>
-      </li>
-       </ul>
-         {% if user.is_authenticated %}
-       <ul class="nav navbar-nav navbar-right">
-       <li><a href="{% url 'Vote:logout' %}"><span class="glyphicon glyphicon-log-in"></span> Log Out</a></li>
-       </ul>
-         {% else %}
-         <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'Vote:login' %}"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
-        </ul>
-         {% endif %}
-     </div>
- </nav>
-{% if user.is_authenticated %}
-  <div class="container-fluid">
-   <div class="jumbotron bg-5">
-   </br>
-    <h3 align='center'><strong>Select your Representatives</strong></h3>
-   </div>
-  </div>
-  <div class="alert alert-danger">
-  <strong>Warning!</strong> Please select a candidate from each category.Thank you :)
+    {% for item in contests %}
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>{{ item.contest.position }}</strong></div>
+        <div class="panel-body">
+          {% if item.contest.about %}<p>{{ item.contest.about }}</p>{% endif %}
+          {% for candidate in item.candidates %}
+            <div class="radio" style="display:flex;align-items:center;gap:1em;margin-bottom:1em">
+              {% if candidate.image %}
+                <img src="{{ candidate.image.url }}" width="70" height="70"
+                     style="border-radius:50%;object-fit:cover" alt="{{ candidate.name }}">
+              {% endif %}
+              <label style="font-weight:normal">
+                <input type="radio" name="contest_{{ item.contest.id }}"
+                       value="{{ candidate.id }}" required>
+                <strong>{{ candidate.name }}</strong>
+                {% if candidate.Description %}<br><small>{{ candidate.Description }}</small>{% endif %}
+              </label>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-success btn-lg">Cast encrypted ballot</button>
+    </div>
+  </form>
 </div>
-
-<form action="voting_platform/vote/" method="post">{% csrf_token %}
-
-{% for pos in candidates %}
-<div class="well well-lg">{{pos.0.1}}</div>
-<!-----Starting of row and columns--->
-{% for candidate in pos %}
- <div class="row">
-   <div class="col-lg-2"><img src="{{MEDIA_URL}}{{candidate.0.image.url}}" class="img-thumbnail" ></div>
-		<button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">{{candidate.0.name}}</button>
-	      <div id="myModal" class="modal fade" role="dialog">
-          <div class="modal-dialog">
-	      <div class="modal-content">
-          <div class="modal-header">
-           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Past Experiences</h4>
-        </div>
-         <div class="modal-body">
-           {{candidate.0.Description}}
-         </div>
-          <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-         </div>
-        </div>
-	    </div>
-      </div>
-     <input type="radio" id="candidate{{ forloop.counter }}" name="candidate{{pos.0.1}}" value="{{candidate.0.id}}"/>
-      </div>
-  </div>
-{% endfor %}
- {% endfor %}
-<br><br>
- <div align="center">
-<a href="{% url 'Vote:casted' %}"> <input type="submit" value="Vote"/></a>
- </div>
-</form>
-
-    {% else %}
-<h2>Login First</h2>
- {% endif %}
-
-
- <footer class="container-fluid bg-4 text-center">
- <p>&copy; Copyright <strong>Smart Voting System Team</strong>. All Rights Reserved</p>
-  <p>MADE WITH SKILL! NOT LOVE.</p>
-</footer>
-
-
- </body>
-</html>
+{% endblock %}

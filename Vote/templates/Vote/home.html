@@ -35,6 +35,9 @@ footer .glyphicon {
        <li><a href="{% url 'Vote:face_index' %}">Add Facedata</a></li>
        <li><a href="{% url 'Vote:vote' %}">Vote</a></li>
        <li><a href="{% url 'Vote:results' %}">Results</a> </li>
+       <li><a href="{% url 'Vote:bulletin' %}">Public Ledger</a></li>
+       <li><a href="{% url 'Vote:verify_ballot' %}">Verify Vote</a></li>
+       <li><a href="{% url 'Vote:face_login' %}">Face Sign-in</a></li>
        <li><a href="/admin">Admin</a></li>
 	   <li><a href ="{% url 'Vote:about' %}">About</a></li>
 	   <li class="dropdown">
@@ -108,7 +111,6 @@ $(document).ready(function(){
     <div class="col-sm-5">
       <p><strong>Contact Us</strong> and we'll get back to you within 24 hours.</p>
       <p><span class="glyphicon glyphicon-map-marker"></span>  Sikkim Manipal Institute of Technology, Majitar</p>
-      <p><span class="glyphicon glyphicon-phone"></span> +91-8972138347</p>
       <p><span class="glyphicon glyphicon-envelope"></span> srivastavaanurag79@gmail.com</p>
     </div>
     <div class="col-sm-7">

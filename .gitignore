@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Django
+db.sqlite3
+staticfiles/
+media/
+
+# Election key material - NEVER commit these
+keys/
+
+# Generated face-model artifacts (retrained on demand)
+ml/recognizer/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local long-form article (published externally, not part of the repo)
+article.md

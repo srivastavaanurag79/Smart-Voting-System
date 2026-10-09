@@ -1,6 +1,7 @@
-from django.conf.urls import url
+from django.urls import re_path
+
 from . import views
 
 urlpatterns = [
-    url(r'^details/(?P<id>\d+)/$', views.details, name='details')
+    re_path(r"^details/(?P<id>[\w-]+)/$", views.details, name="details"),
 ]

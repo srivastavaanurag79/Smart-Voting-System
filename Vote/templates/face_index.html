@@ -1,119 +1,94 @@
 {% extends 'layout.html' %}
-
 {% load static %}
-{% block title %}Add Facedata{% endblock %}
+{% block title %}Enrol Face Data{% endblock %}
 {% block content %}
-<div id="particles-js"></div>
-<div class="container" >
-  <div class="col-lg-12" style="background: rgba(0,0,0,0.6);margin-top:3em;margin-bottom:5em;padding-top:1em;padding-bottom:3em;color:#fff;border-radius:10px;-webkit-box-shadow: 2px 2px 15px 0px rgba(0, 3, 0, 0.7);
--moz-box-shadow:    2px 2px 15px 0px rgba(0, 3, 0, 0.7);
-box-shadow:         2px 2px 15px 0px rgba(0, 3, 0, 0.7);">
-    <div class="col-lg-12">
-      <h1 class="text-center section-title" style="margin-bottom:2em">Smart Voting System</h1>
+<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
+  <h1 class="text-center">Enrol your Face</h1>
+  <p class="text-center">Voter ID: <strong>{{ profile.id }}</strong></p>
+  <p class="text-center">
+    Your webcam is used only to build a local face model for login. Frames are
+    never linked to your ballot.
+  </p>
+
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-md-6 text-center">
+      <video id="video" autoplay playsinline muted width="100%"
+             style="max-width:420px;border-radius:10px;background:#000"></video>
     </div>
-    <style>
-      h4{
-        margin-bottom: 1.5em;
-      }
-      img{
-        border-radius:50%;
-        -webkit-transition: all 0.3s ease-in-out;
-    -moz-transition: all 0.3s ease-in-out;
-     transition: all 0.3s ease-in-out;
-      }
-      img:hover{
-        -webkit-box-shadow: 2px 2px 21px 0px rgba(0, 3, 0, 0.91);
-        -moz-box-shadow:    2px 2px 21px 0px rgba(0, 3, 0, 0.91);
-        box-shadow:         2px 2px 21px 0px rgba(0, 3, 0, 0.91);
-        border:2px solid #fff;
-      }
-      h3{
-        margin-bottom: 1.3em;
-      }
-      a{
-        color:inherit
-      }
-      a:hover{
-        color:inherit;
-        text-decoration: none;
-      }
-      .section-title:after {
-        	content:' ';display:block;margin:0 auto;width:100px;margin-top: 6px;border:2px solid #d0d0d0;border-radius:4px;
-        	-webkit-border-radius:4px;
-        	-moz-border-radius:4px;
-        	box-shadow:inset 0 1px 1px rgba(0, 0, 0, .05);
-        	-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, .05);
-        	-moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, .05);
-          margin-bottom:1em;
-        }
-    </style>
-
-    <div class="row">
-      <div class="col-md-5" style="border-right: 2px solid;">
-        <h3 class="text-center"></br></br>How to add your Facedata ?</h3>
-
-        <div class="col-md-13">
-
-          <h3 align="left">
-            1. Click on Create Dataset.</br>
-            2. Input your Unique Id, click Submit.</br>
-            3. Wait for the webcam to finish.</br>
-            4. Click on Train the Classifier.</br>
-          </h3>
-        </div>
-      </div>
-      <div class="col-md-7">
-        <h3 class="text-center">With OpenCV, LBPH</h3>
-        <div class="col-md-4">
-          <a href="{% url 'Vote:home' %}"><img src="{% static 'img/webcam.png' %}" class="img-responsive" /></a>
-          <h4 class="text-center">Home</h4>
-        </div>
-        <div class="col-md-4">
-          <a href="/Vote/trainer"><img src="{% static 'img/trainer.png' %}" class="img-responsive" /></a>
-          <h4 class="text-center">Train The Classifier</h4>
-        </div>
-        <div class="col-md-4">
-          <button type="button" style="background:transparent;border:none" data-toggle="modal" data-target="#myModal">
-            <img src="{% static 'img/add.png' %}" class="img-responsive" />
-          </button>
-          <h4 class="text-center">Create Dataset</h4>
-        </div>
-      </div>
-    </div>
-</div><!-- Container -->
-
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Input unique id and wait for webcam</h4>
-      </div>
-      <div class="modal-body">
-        <ul>
-          <li>For higher accuracy, make sure to stay in room with good lightning.</li>
-          <li>Please remove any type of accesories from face.</li>
-          <li>Make sure your face in clearly visible in camera.</li>
-          <li>Make sure your hair is not blocking the face.</li>
-          <li>Make sure no other faces are within the cam frame.
-        </ul>
-        <hr/>
-        <form action="/Vote/create_dataset" method="POST">
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="inputId">Enter Unique ID*</label>
-            <input type="text" class="form-control" name="userId" id="inputId" placeholder="Enter Id">
-          </div>
-          <button type="submit" class="btn btn-warning">Submit</button>
-        </form>
-      </div>
+    <div class="col-md-6">
+      <p><strong>How it works</strong></p>
+      <ol>
+        <li>Allow camera access.</li>
+        <li>Look straight at the camera in good light.</li>
+        <li>Click <em>Start capture</em> and hold still while 20 frames are taken.</li>
+        <li>Click <em>Save</em> to store and retrain the classifier.</li>
+      </ol>
+      <p>Samples captured: <span id="count">0</span></p>
+      <button id="start" class="btn btn-primary">Start capture</button>
+      <button id="save" class="btn btn-success" disabled>Save</button>
+      <a class="btn btn-default" href="{% url 'Vote:home' %}">Back</a>
+      <div id="status" style="margin-top:1em"></div>
     </div>
   </div>
 </div>
-</div>
 
+<script>
+const video = document.getElementById('video');
+const canvas = document.createElement('canvas');
+const countEl = document.getElementById('count');
+const statusEl = document.getElementById('status');
+let frames = [];
+let stream = null;
+
+async function startCamera() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 } });
+    video.srcObject = stream;
+  } catch (err) {
+    statusEl.innerHTML = '<span class="text-danger">Camera error: ' + err.message + '</span>';
+  }
+}
+
+function captureFrame() {
+  canvas.width = video.videoWidth || 320;
+  canvas.height = video.videoHeight || 240;
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', 0.8);
+}
+
+document.getElementById('start').addEventListener('click', async () => {
+  frames = [];
+  countEl.textContent = '0';
+  document.getElementById('save').disabled = true;
+  for (let i = 0; i < 20; i++) {
+    frames.push(captureFrame());
+    countEl.textContent = frames.length;
+    await new Promise(r => setTimeout(r, 200));
+  }
+  document.getElementById('save').disabled = false;
+  statusEl.textContent = 'Capture complete. Click Save.';
+});
+
+document.getElementById('save').addEventListener('click', async () => {
+  statusEl.textContent = 'Saving and training...';
+  const body = new FormData();
+  frames.forEach(f => body.append('frames[]', f));
+  const resp = await fetch("{% url 'Vote:enroll_face' %}", {
+    method: 'POST',
+    headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+    body: body,
+  });
+  const data = await resp.json();
+  if (data.ok) {
+    statusEl.innerHTML = '<span class="text-success">Saved ' + data.samples +
+      ' samples, trained on ' + data.trained_on + '.</span>';
+  } else {
+    statusEl.innerHTML = '<span class="text-danger">' + data.error + '</span>';
+  }
+});
+
+window.addEventListener('beforeunload', () => { if (stream) stream.getTracks().forEach(t => t.stop()); });
+startCamera();
+</script>
 {% endblock %}

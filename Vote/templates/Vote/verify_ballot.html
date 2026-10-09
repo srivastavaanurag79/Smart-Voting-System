@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Verify Ballot{% endblock %}
+{% block content %}
+<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
+  <h1 class="text-center">Verify your Ballot</h1>
+  <p class="text-center">Paste the receipt you were given when you voted.</p>
+
+  <form method="post" class="form-inline text-center" style="margin-bottom:2em">
+    {% csrf_token %}
+    <input type="text" name="receipt" value="{{ receipt }}" class="form-control"
+           style="min-width:22em" placeholder="Ballot receipt hash">
+    <button class="btn btn-primary">Verify</button>
+  </form>
+
+  {% if result %}
+    {% if result.found %}
+      <div class="alert alert-success text-center">
+        Ballot found on the ledger at position <strong>#{{ result.ballot.index }}</strong>.
+        {% if result.valid_chain %}
+          The full ledger hash chain is <strong>valid</strong>.
+        {% else %}
+          <span class="text-danger">Warning: the ledger chain failed validation.</span>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="alert alert-danger text-center">No ballot matches that receipt.</div>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

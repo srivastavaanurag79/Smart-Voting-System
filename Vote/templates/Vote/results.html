@@ -1,108 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'layout.html' %}
 {% load static %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, iniital-scale=1;">
-    <title>Results</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% block title %}Results{% endblock %}
+{% block content %}
+<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
+  <h1 class="text-center">Election Results</h1>
+  <p class="text-center">{{ election.name }}</p>
 
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  {% if not published %}
+    <div class="alert alert-warning text-center">
+      Results are not published yet. An election official must run the tally,
+      which decrypts each ballot with the election private key.
+    </div>
+  {% endif %}
 
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'Vote/home.css' %}">
-<style>
-footer .glyphicon {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #f4511e;
-}
-.navbar-brand{
-  float: none;
+  {% if user.is_staff %}
+    <form method="post" action="{% url 'Vote:tally' %}" class="text-center" style="margin-bottom:2em">
+      {% csrf_token %}
+      <button class="btn btn-warning">Run tally (officials)</button>
+    </form>
+  {% endif %}
 
-</style>
-</head>
-<body>
-<nav class="navbar navbar-default navbar-fixed-top">
-     <div class="container-fluid">
-       <div class=" navbar-header">
-           <img src="{% static 'Vote/2018-06-11.png' %}" alt="some text" width=150 height=50>
-           <a class="navbar-brand" href="#">Smart Voting System</a>
-       </div>
-      <ul class="nav navbar-nav">
-       <li><a href="{% url 'Vote:home' %}">Home</a></li>
-       <li><a href="{% url 'Vote:vote' %}">Vote</a></li>
-       <li class="active"><a href="{% url 'Vote:results' %}">Results</a> </li>
-	   <li><a href ="{% url 'Vote:about' %}">About</a></li>
-	   <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">English
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Hindi</a></li>
-        </ul>
-      </li>
-       </ul>
-
-        {% if user.is_authenticated %}
-       <ul class="nav navbar-nav navbar-right">
-       <li><a href="{% url 'Vote:logout' %}"><span class="glyphicon glyphicon-log-in"></span> Log Out</a></li>
-       </ul>
-         {% else %}
-         <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'Vote:login' %}"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
-        </ul>
-         {% endif %}
-     </div>
-    </nav>
-<br>
-<br>
-<h1 align="center">
-    <b> Election Results</b>
-</h1>
-<div class="row row-5 bg-10">
-{% for pos in candidates %}
-<div class="container-fluid  bg-4 text-center"><h2>{{pos.0.1.position}}</h2>
-<h4 align='justify'>{{pos.0.1.about}}
-</h4>
-
-<!--<img src="{{MEDIA_URL}}{{pos.0.2}}" class="img-responsive margin" style="display:inline" alt="Image" width="550" height="550">--->
-<!-----Starting of row and columns --->
+  {% for item in contests %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><strong>{{ item.contest.position }}</strong></div>
+      <div class="panel-body">
+        {% for candidate in item.candidates %}
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6em">
+            <span>{{ candidate.name }}</span>
+            <strong>{{ candidate.votes }} votes</strong>
+          </div>
+        {% endfor %}
+        <canvas id="chart-{{ forloop.counter }}" height="120"></canvas>
+      </div>
+    </div>
+  {% endfor %}
 </div>
-{% for candidate in pos %}
- <div class="row">
-   <div class="col-lg-2"><img src="{{MEDIA_URL}}{{candidate.0.image.url}}" class="img-thumbnail" ></div class="col-lg-2">
-    	<div class="col-lg-2">
-		<button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">{{candidate.0.name}}</button>
-	      <div id="myModal" class="modal fade" role="dialog">
-          <div class="modal-dialog">
-	      <div class="modal-content">
-          <div class="modal-header">
-           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Past Experiences</h4>
-        </div>
-         <div class="modal-body">
-           {{candidate.0.Description}}
-         </div>
-          <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-         </div>
-        </div>
-	    </div>
-      </div>
-            Total Votes : {{candidate.0.votes}}
-      </div>
-  </div>
-{% endfor %}
- {% endfor %}
 
-<footer class="container-fluid  bg-4 text-center">
-  <a href="#myPage" title="To Top">
-    <span class="glyphicon glyphicon-chevron-up"></span>
-  </a>
-  <p>&copy; Copyright <strong>Smart Voting System Team</strong>. All Rights Reserved</p>
-  <p>MADE WITH SKILL! NOT LOVE.</a></p>
-</footer>
-</body>
-</html>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+const data = {{ chart_data|safe }};
+data.forEach((block, i) => {
+  const el = document.getElementById('chart-' + (i + 1));
+  if (!el) return;
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: block.labels,
+      datasets: [{ label: block.contest, data: block.votes,
+                   backgroundColor: 'rgba(4,124,42,0.55)' }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
+});
+</script>
+{% endblock %}
