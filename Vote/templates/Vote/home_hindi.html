@@ -1,146 +1,102 @@
-<!doctype html>
-<html>
-<head>
-    {% load static %}
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, iniital-scale=1;">
-<title>स्मार्ट वोटिंग सिस्टम</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}सुरक्षित ऑनलाइन मतदान{% endblock %}
+{% block content %}
 
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'Vote/home.css' %}">
-<style>
-footer .glyphicon {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #f4511e;
-}
-.navbar-brand{
-  float: none;
-</style>
-</head>
-<body>
-   <nav class="navbar navbar-default navbar-fixed-top">
-     <div class="container-fluid">
-       <div class=" navbar-header">
-           <img src="{% static 'Vote/2018-06-11.png' %}" alt="some text" width=150 height=50>
-           <a class="navbar-brand" href="#">स्मार्ट वोटिंग सिस्टम</a>
-       </div>
-      <ul class="nav navbar-nav">
-       <li class="active"><a href="#">होम</a></li>
-       <li><a href="{% url 'Vote:face_index' %}">फेस डेटा जोड़ें</a></li>
-       <li><a href="{% url 'Vote:vote' %}">वोट</a></li>
-       <li><a href="{% url 'Vote:results' %}">परिणाम</a> </li>
-       <li><a href="/admin">व्यवस्थापक</a></li>
-	   <li><a href ="{% url 'Vote:about' %}">बारे में</a></li>
-	   <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">हिंदी
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="{% url 'Vote:home' %}">English</a></li>
-
-        </ul>
-      </li>
-       </ul>
-
-        {% if user.is_authenticated %}
-       <ul class="nav navbar-nav navbar-right">
-       <li><a href="{% url 'Vote:logout' %}"><span class="glyphicon glyphicon-log-in"></span> Log Out</a></li>
-       </ul>
-         {% else %}
-         <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'Vote:login' %}"><span class="glyphicon glyphicon-log-in"></span>लॉग इन</a></li>
-        </ul>
-         {% endif %}
-     </div>
-    </nav>
-   <div class="page-header bg-6">
-   <h1 align="center" ><strong>स्मार्ट वोटिंग सिस्टम</strong></h1>
- <h3 align="center">घर बैठे वोट करने का तेज़ और कुशल तरीका।</h3>
-   </div>
-   <!----row column---->
-   <div class="row">
-     <div class="col-lg-4" class="slideanim"><img src="{% static 'Vote/smart-voting-system.jpg' %}" class="img-thumbnail" ></div>
-	 <div class="col-lg-8">
-   <h4 align="justify">
-      <strong>स्मार्ट वोटिंग सिस्टम</strong> पारंपरिक पासवर्ड के साथ-साथ चेहरे की पहचान का उपयोग करता है जो एक अतिरिक्त सुरक्षा प्रदान करता है।
-       यह वेब ऐप संगठन और संस्थानों की जरूरतों को पूरा करने के लिए बनाया गया है।
-       </br>
-       </br>
-       <strong>स्मार्ट वोटिंग सिस्टम</strong> आपके द्वारा बनाए जाने वाले चुनावों की संख्या को सीमित नहीं करता है। अधिकांश मतदान वेबसाइटों के विपरीत, आप जितनी बार चाहें उतनी बार मुफ्त सेवा का उपयोग जारी रख सकते हैं।
-        किसी संगठन या संस्थान के लिए चुनावों का आयोजन करना और अपने सहयोगियों या सीआर को अपना वोट देने का एक त्वरित और आसान तरीका है।
-       </br></br> <strong>व्यवस्थापक से संपर्क करें </strong>अपने लॉगिन क्रेडेंशियल प्राप्त करने के लिए।
-      एक बार जब आप लॉगिन क्रेडेंशियल प्राप्त करते हैं तो आप अपना चेहरा डेटा जोड़ सकते हैं और आप वोट करने के लिए तैयार हैं।
-      </h4>
-     </div>
-	</div>
-    <div class="row bg-5" >
-     <div class="col-lg-8" class="slideanim">
-     <h2>   <strong>इस वेब ऐप को क्या खास बनाता है?</strong></h2>
-          <h4 align="justify">
-       <strong> स्मार्ट वोटिंग सिस्टम</strong> एक बहुत ही न्यूनतर, उपयोगकर्ता के अनुकूल डिजाइन है।
-         </br>कोई झंझट नहीं, कोई उपद्रव नहीं है, और कोई लंबा कदम नहीं है जिससे आप जानकारी भर सकें। वास्तव में, आपको अपने खाते के लिए साइन अप करने की ज़रूरत नहीं है, बस अपने संगठन के व्यवस्थापक से अपनी लॉगिन creadentials प्राप्त करें। इस वोटिंग वेबसाइट को आपके मोबाइल नंबर की आवश्यकता नहीं है, न्यूज़लेटर भेजने के लिए अपने ईमेल पते को न सहेजें और कभी भी अपनी संपर्क जानकारी को तीसरे पक्ष के विज्ञापनदाताओं को नहीं बेचेंगे !!
-
-         </h4>
-    </div>
-	    <div class="col-lg-4"><img src="{% static 'Vote/e_vote.jpg' %}" class="img-thumbnail" ></div>
-	  </div>
-	  </div>
-	  <div class="row">
-		<div class="col-lg-12" align="center">
-    <h2>बस एक <strong> क्लिक</strong> दूर मतदान</h2>
-		<br>
-        <a href="{% url 'Vote:vote' %}"><button type="button" class="btn1">वोट</button><br><br></a>
-		</div>
-	   </div>
-
-		 <br>
-		 <br>
-
-
-<script>
-$(document).ready(function(){
-    $('[data-toggle="popover"]').popover();
-});
-</script>
-	<div class="container-fluid bg-4">
-  <h2 class="text-center">संपर्क करें</h2>
-  <div class="row row2">
-    <div class="col-sm-5">
-      <p><strong>हमसे संपर्क करें </strong>और हम 24 घंटे के भीतर आप पर वापस आ जाएंगे।</p>
-      <p><span class="glyphicon glyphicon-map-marker"></span> सिक्किम मणिपाल इंस्टीट्यूट ऑफ टेक्नोलॉजी, मैजिटर</p>
-      <p><span class="glyphicon glyphicon-envelope"></span> srivastavaanurag79@gmail.com</p>
-    </div>
-    <div class="col-sm-7">
-      <div class="row row2">
-        <div class="col-sm-6 form-group">
-          <input class="form-control" id="name" name="name" placeholder="Name" type="text" required>
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__grid">
+      <div class="reveal">
+        <span class="eyebrow">आधार-आधारित · एन्क्रिप्टेड · सत्यापनीय</span>
+        <h1>घर से वोट करें। अपना वोट गिना जाना सिद्ध करें।</h1>
+        <p class="lead">
+          स्मार्टवोट पात्रता को सत्यापित पहचान से जोड़ता है, हर मतपत्र को एन्क्रिप्ट
+          करता है ताकि कोई उसे पढ़ न सके, और एक छेड़छाड़-रहित बहीखाता प्रकाशित करता है
+          जिसे कोई भी जाँच सकता है — बिना बताए कि आपने कैसे मतदान किया।
+        </p>
+        <div class="row mt-3">
+          <a class="btn btn--accent btn--lg" href="{% url 'Vote:vote' %}">अपना वोट डालें</a>
+          {% if user.is_authenticated %}
+            <a class="btn btn--light btn--lg" href="{% url 'Vote:face_index' %}">फेस डेटा जोड़ें</a>
+          {% else %}
+            <a class="btn btn--light btn--lg" href="{% url 'Vote:face_login' %}">फेस से साइन इन करें</a>
+          {% endif %}
         </div>
-        <div class="col-sm-6 form-group">
-          <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
+        <div class="hero__badges">
+          <span class="pill"><span class="dot"></span> एक व्यक्ति, एक वोट</span>
+          <span class="pill">एंड-टू-एंड एन्क्रिप्टेड मतपत्र</span>
+          <span class="pill">सार्वजनिक रूप से सत्यापनीय बहीखाता</span>
         </div>
       </div>
-      <textarea class="form-control" id="comments" name="comments" placeholder="Comment" rows="5"></textarea><br>
-      <div class="row row2">
-        <div class="col-sm-12 form-group">
-          <button class="btn btn-default pull-right" type="submit">Send</button>
+      <div class="reveal d2" aria-hidden="true">
+        <div class="ledger">
+          <div class="ledger__head">
+            <span class="ledger__title">सार्वजनिक बहीखाता</span>
+            <span class="badge badge--valid">श्रृंखला वैध</span>
+          </div>
+          <div class="ledger__row"><span class="ledger__idx">#128</span><span class="ledger__hash">9f31c0a7e2…d41b</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#129</span><span class="ledger__hash">a72b4fe19c…08aa</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#130</span><span class="ledger__hash">c58d90e0f3…72de</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#131</span><span class="ledger__hash">1e77a9bd54…f012</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#132</span><span class="ledger__hash">b0c2e6a1d8…4c9f</span><span class="ledger__ok">✓</span></div>
+          <p class="ledger__title mt-2" style="margin-bottom:0">सभी मतपत्र एन्क्रिप्टेड रहते हैं — कोई मत सामग्री प्रकाशित नहीं होती।</p>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-<footer class="container-fluid  bg-4 text-center">
-  <a href="#myPage" title="To Top">
-    <span class="glyphicon glyphicon-chevron-up"></span>
-  </a>
-    <p>&copy; Copyright <strong>Smart Voting System Team</strong>. All Rights Reserved</p>
-  <p>MADE WITH SKILL! NOT LOVE.</a></p>
-</footer>
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">क्यों भरोसा किया जा सकता है</span>
+    <h2 class="mt-1">ऐसी सुरक्षा जिसे आप जाँच सकते हैं</h2>
+    <div class="grid grid--3 mt-3">
+      <div class="feature reveal"><div class="feature__icon">◆</div><h3>एन्क्रिप्टेड मतपत्र</h3><p class="muted mb-0">प्रत्येक मतपत्र चुनाव की सार्वजनिक कुंजी से सील किया जाता है (RSA-OAEP + AES-256-GCM)। केवल गणना समारोह ही इसे खोल सकता है।</p></div>
+      <div class="feature reveal d1"><div class="feature__icon">⛓</div><h3>छेड़छाड़-रहित बहीखाता</h3><p class="muted mb-0">मतपत्र एक हैश श्रृंखला में जोड़े जाते हैं। एक बदलें और आगे की हर कड़ी टूट जाती है — स्पष्ट रूप से।</p></div>
+      <div class="feature reveal d2"><div class="feature__icon">✓</div><h3>आपकी रसीद</h3><p class="muted mb-0">एक रसीद पाएँ जो सिद्ध करती है कि आपका मतपत्र गिनती में है — आपकी पसंद बताए बिना।</p></div>
+      <div class="feature reveal"><div class="feature__icon">◈</div><h3>आधार-आधारित</h3><p class="muted mb-0">पहचान आधार OTP + बायोमेट्रिक से सत्यापित होती है, जिसका मिलान UIDAI के भीतर होता है। बायोमेट्रिक यहाँ कभी संग्रहीत नहीं होते।</p></div>
+      <div class="feature reveal d1"><div class="feature__icon">☰</div><h3>एक व्यक्ति, एक वोट</h3><p class="muted mb-0">अद्वितीय सत्यापित पहचान और एकल-उपयोग टोकन मिलकर दोहरे मतदान को रोकते और पकड़ते हैं।</p></div>
+      <div class="feature reveal d2"><div class="feature__icon">◎</div><h3>डिज़ाइन से निजी</h3><p class="muted mb-0">मतदाता आईडी (EPIC) और पहचान डेटा विश्राम में एन्क्रिप्टेड हैं; मतपत्रों का कोई स्वामी नहीं। कोई वोट का पता नहीं लगा सकता।</p></div>
+    </div>
+  </div>
+</section>
 
-</div>
-</body>
-</html>
+<section class="section" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="container">
+    <div class="grid grid--2" style="align-items:center">
+      <div>
+        <span class="eyebrow">यह कैसे काम करता है</span>
+        <h2 class="mt-1">कहीं से भी, चार चरण</h2>
+        <div class="steps mt-3">
+          <div class="step"><h3 class="mb-0">साइन इन करें</h3><p class="muted mb-0">पासवर्ड, साथ ही सुविधा हेतु वैकल्पिक फेस मैच।</p></div>
+          <div class="step"><h3 class="mb-0">पहचान सत्यापित करें</h3><p class="muted mb-0">आधार OTP + बायोमेट्रिक (चेहरा, फिंगरप्रिंट या आइरिस) का UIDAI द्वारा 1:1 मिलान।</p></div>
+          <div class="step"><h3 class="mb-0">अपना एन्क्रिप्टेड मतपत्र डालें</h3><p class="muted mb-0">प्रत्येक प्रतियोगिता के लिए एक उम्मीदवार चुनें। मतपत्र सील कर गुमनाम रूप से जोड़ा जाता है।</p></div>
+          <div class="step"><h3 class="mb-0">अपनी रसीद सत्यापित करें</h3><p class="muted mb-0">किसी भी समय सार्वजनिक बहीखाते पर समावेशन की पुष्टि करें, अपना मत बताए बिना।</p></div>
+        </div>
+      </div>
+      <div class="card card--pad-lg reveal d1">
+        <span class="pill pill--accent">आज़माने के लिए तैयार?</span>
+        <h3 class="mt-2">डेमो चलाएँ</h3>
+        <p class="muted">डेमो मतदाता के रूप में साइन इन करें, मॉक आधार प्रक्रिया से सत्यापित करें, वोट डालें और बहीखाता देखें।</p>
+        <a class="btn btn--primary btn--block" href="{% url 'Vote:login' %}">मतदान हेतु लॉग इन करें</a>
+        <a class="btn btn--ghost btn--block mt-1" href="{% url 'Vote:bulletin' %}">सार्वजनिक बहीखाता देखें</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card card--pad-lg">
+      <div class="grid grid--2">
+        <div><span class="eyebrow">संपर्क करें</span><h3 class="mt-1">सिस्टम के बारे में प्रश्न?</h3><p class="muted mb-0">हमसे संपर्क करें, हम 24 घंटे में उत्तर देंगे।</p></div>
+        <div>
+          <p class="mb-0"><span class="muted">स्थान</span><br>सिक्किम मणिपाल इंस्टीट्यूट ऑफ टेक्नोलॉजी, मैजिटर</p>
+          <p class="mb-0 mt-2"><span class="muted">ईमेल</span><br>srivastavaanurag79@gmail.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

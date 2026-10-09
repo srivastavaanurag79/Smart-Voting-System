@@ -66,6 +66,18 @@ def home_hindi(request):
     return render(request, "Vote/home_hindi.html", {})
 
 
+def home_tamil(request):
+    return render(request, "Vote/home_tamil.html", {})
+
+
+def home_bengali(request):
+    return render(request, "Vote/home_bengali.html", {})
+
+
+def home_malayalam(request):
+    return render(request, "Vote/home_malayalam.html", {})
+
+
 def about(request):
     return render(request, "Vote/about.html", {})
 
@@ -81,7 +93,11 @@ def invalid(request):
 def casted(request):
     """Shows the voter their anonymous ballot receipt after casting."""
     receipt = request.session.pop("last_receipt", "")
-    return render(request, "Vote/casted.html", {"receipt": receipt})
+    public_id = ""
+    if receipt:
+        code = receipt[:8].upper()
+        public_id = f"SV-{code[:4]}-{code[4:]}"
+    return render(request, "Vote/casted.html", {"receipt": receipt, "public_id": public_id})
 
 
 # --- authentication ----------------------------------------------------------
@@ -100,7 +116,7 @@ def user_login(request):
             return HttpResponseRedirect("/Vote/invalid/")
         login(request, user)
         get_profile(user)
-        return HttpResponseRedirect("/Vote/detect/")
+        return HttpResponseRedirect("/Vote/vote/")
     return render(request, "Vote/login.html", {})
 
 
@@ -112,8 +128,10 @@ def user_logout(request):
 
 # --- face enrolment ----------------------------------------------------------
 
-@login_required(login_url="/Vote/login/")
 def face_index(request):
+    """Enrolment page. Requires an account: eligibility must be tied to a voter."""
+    if not request.user.is_authenticated:
+        return render(request, "face_index.html", {"needs_login": True})
     profile = get_profile(request.user)
     return render(request, "face_index.html", {"profile": profile})
 

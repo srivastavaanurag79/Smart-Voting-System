@@ -1,31 +1,39 @@
 {% extends 'layout.html' %}
 {% load static %}
-{% block title %}Verify Ballot{% endblock %}
+{% block title %}Verify your ballot{% endblock %}
 {% block content %}
-<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
-  <h1 class="text-center">Verify your Ballot</h1>
-  <p class="text-center">Paste the receipt you were given when you voted.</p>
+<section class="section">
+  <div class="container narrow" style="max-width:640px">
+    <span class="eyebrow">Individual verification</span>
+    <h1 class="mt-1">Verify your ballot</h1>
+    <p class="muted">Paste the receipt you were given when you voted. This proves
+      your ballot is on the ledger without revealing your choice.</p>
 
-  <form method="post" class="form-inline text-center" style="margin-bottom:2em">
-    {% csrf_token %}
-    <input type="text" name="receipt" value="{{ receipt }}" class="form-control"
-           style="min-width:22em" placeholder="Ballot receipt hash">
-    <button class="btn btn-primary">Verify</button>
-  </form>
-
-  {% if result %}
-    {% if result.found %}
-      <div class="alert alert-success text-center">
-        Ballot found on the ledger at position <strong>#{{ result.ballot.index }}</strong>.
-        {% if result.valid_chain %}
-          The full ledger hash chain is <strong>valid</strong>.
-        {% else %}
-          <span class="text-danger">Warning: the ledger chain failed validation.</span>
-        {% endif %}
+    <form method="post" class="card mt-3">
+      {% csrf_token %}
+      <div class="field">
+        <label for="receipt">Ballot receipt</label>
+        <input type="text" id="receipt" name="receipt" value="{{ receipt }}"
+               class="mono" placeholder="64-character receipt hash" autocomplete="off">
       </div>
-    {% else %}
-      <div class="alert alert-danger text-center">No ballot matches that receipt.</div>
+      <button class="btn btn--primary btn--block">Verify receipt</button>
+    </form>
+
+    {% if result %}
+      {% if result.found %}
+        <div class="alert alert--success mt-3">
+          Ballot <strong class="mono">{{ result.ballot.public_id }}</strong> found on the ledger
+          at position <strong>#{{ result.ballot.index }}</strong>.
+          {% if result.valid_chain %}
+            The full ledger hash chain is <strong>valid</strong>.
+          {% else %}
+            <span style="color:var(--danger)">Warning: the ledger chain failed validation.</span>
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="alert alert--error mt-3">No ballot matches that receipt.</div>
+      {% endif %}
     {% endif %}
-  {% endif %}
-</div>
+  </div>
+</section>
 {% endblock %}

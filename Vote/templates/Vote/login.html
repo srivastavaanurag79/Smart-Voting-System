@@ -1,102 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'layout.html' %}
 {% load static %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, iniital-scale=1;">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% block title %}Log in{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container narrow" style="max-width:460px">
+    <div class="card card--pad-lg reveal">
+      <span class="eyebrow">Voter access</span>
+      <h2 class="mt-1">Log in to vote</h2>
+      <p class="muted">Use the credentials issued by your election administrator.</p>
 
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <form method="post" action="{% url 'Vote:login' %}" class="mt-3">
+        {% csrf_token %}
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn--primary btn--block btn--lg">Log in</button>
+      </form>
 
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'Vote/login.css' %}">
-<style>
-footer .glyphicon {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #f4511e;
-}
-.navbar-brand{
-  float: none;
-</style>
-</head>
-<body>
-<nav class="navbar navbar-default navbar-fixed-top">
-     <div class="container-fluid">
-       <div class=" navbar-header">
-           <img src="{% static 'Vote/2018-06-11.png' %}" alt="some text" width=150 height=50>
-           <a class="navbar-brand" href="#">Smart Voting System</a>
-       </div>
-      <ul class="nav navbar-nav">
-       <li><a href="{% url 'Vote:home' %}">Home</a></li>
-       <li><a href="{% url 'Vote:vote' %}">Vote</a></li>
-       <li><a href="{% url 'Vote:results' %}">Results</a> </li>
-	   <li><a href ="{% url 'Vote:about' %}">About</a></li>
-	   <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">English
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Hindi</a></li>
-
-        </ul>
-      </li>
-       </ul>
-
-        {% if user.is_authenticated %}
-       <ul class="nav navbar-nav navbar-right">
-       <li><a href="{% url 'Vote:logout' %}"><span class="glyphicon glyphicon-log-in"></span> Log Out</a></li>
-       </ul>
-         {% else %}
-         <ul class="nav navbar-nav navbar-right">
-        <li class="active"><a href="{% url 'Vote:login' %}"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
-        </ul>
-         {% endif %}
-     </div>
-    </nav>
-<div class="row">
-<div class="col-lg-12">
-<div class="form_l1" align="center">LOGIN FORM</div>
-<div class="form_div" align="center">
-<p class="form_label1">Enter your Login Credentials:</p>
-{% if messages %}
-  {% for message in messages %}
-    <p class="text-danger"><strong>{{ message }}</strong></p>
-  {% endfor %}
-{% endif %}
-<form method="post" action="{% url 'Vote:login' %}">{% csrf_token %}
-
-    <b>Username:</b> <input type="text" name="username" placeholder="Enter Username" value=""/>
-    <b>Password:</b> <input type="password" name="password" placeholder="Enter Password" value=""/>
-    </br>
-    </br>
-    <input type="submit" name="submit" value="Log In" />
-
-</form>
-<p style="margin-top:1em">
-  or <a href="{% url 'Vote:face_login' %}">sign in with your face</a>
-</p>
-</div>
-</div>
-</div>
-<div id="backgroundImage">
- <div class="main">
- </div>
-</div>
-</br>
-</br>
-<div class="container-fluid bg-4">
-<footer class="container-fluid  bg-4 text-center">
-  <a href="#myPage" title="To Top">
-    <span class="glyphicon glyphicon-chevron-up"></span>
-  </a>
-
-  <p>&copy; Copyright <strong>Smart Voting System Team</strong>. All Rights Reserved</p>
-  <p>MADE WITH SKILL! NOT LOVE.</a></p>
-</footer>
-</div>
-
-</body>
-</html>
+      <hr class="hr">
+      <a class="btn btn--ghost btn--block" href="{% url 'Vote:face_login' %}">Sign in with your face</a>
+      <p class="center muted mt-2" style="font-size:.85rem;margin-bottom:0">
+        Demo: <span class="mono">guptaabhishek / gupta1234</span>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

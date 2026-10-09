@@ -1,50 +1,47 @@
 {% extends 'layout.html' %}
 {% load static %}
-{% block title %}Cast your Vote{% endblock %}
+{% block title %}Cast your vote{% endblock %}
 {% block content %}
-<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
-  <h1 class="text-center">{{ election.name }}</h1>
-  <p class="text-center">
-    Your choices are encrypted before they are stored and can never be linked
-    back to you.
-  </p>
+<section class="section">
+  <div class="container narrow">
+    <span class="eyebrow">Ballot</span>
+    <h1 class="mt-1">{{ election.name }}</h1>
+    <p class="muted">Choose one candidate per contest. Your choices are encrypted
+      before storage and can never be linked back to you.</p>
 
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
+    <form method="post" action="{% url 'Vote:vote' %}" class="mt-3">
+      {% csrf_token %}
+      <input type="hidden" name="voting_token" value="{{ voting_token }}">
 
-  <form method="post" action="{% url 'Vote:vote' %}">
-    {% csrf_token %}
-    <input type="hidden" name="voting_token" value="{{ voting_token }}">
-
-    {% for item in contests %}
-      <div class="panel panel-default">
-        <div class="panel-heading"><strong>{{ item.contest.position }}</strong></div>
-        <div class="panel-body">
-          {% if item.contest.about %}<p>{{ item.contest.about }}</p>{% endif %}
-          {% for candidate in item.candidates %}
-            <div class="radio" style="display:flex;align-items:center;gap:1em;margin-bottom:1em">
-              {% if candidate.image %}
-                <img src="{{ candidate.image.url }}" width="70" height="70"
-                     style="border-radius:50%;object-fit:cover" alt="{{ candidate.name }}">
-              {% endif %}
-              <label style="font-weight:normal">
-                <input type="radio" name="contest_{{ item.contest.id }}"
-                       value="{{ candidate.id }}" required>
-                <strong>{{ candidate.name }}</strong>
-                {% if candidate.Description %}<br><small>{{ candidate.Description }}</small>{% endif %}
+      {% for item in contests %}
+        <div class="panel reveal">
+          <div class="panel__head">
+            {{ item.contest.position }}
+            <span class="muted" style="font-weight:400">· {{ item.candidates|length }} candidates</span>
+          </div>
+          <div class="panel__body">
+            {% if item.contest.about %}<p class="muted">{{ item.contest.about }}</p>{% endif %}
+            {% for candidate in item.candidates %}
+              <label class="choice">
+                {% if candidate.image %}<img src="{{ candidate.image.url }}" alt="{{ candidate.name }}">{% endif %}
+                <input type="radio" name="contest_{{ item.contest.id }}" value="{{ candidate.id }}" required>
+                <span class="choice__body">
+                  <strong>{{ candidate.name }}</strong>
+                  {% if candidate.Description %}<small>{{ candidate.Description }}</small>{% endif %}
+                </span>
               </label>
-            </div>
-          {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="card mt-3" style="background:var(--ink);color:#c7cfe6;border-color:transparent">
+        <div class="row row--between">
+          <span class="pill"><span class="dot"></span> Encrypted before it leaves your browser</span>
+          <button type="submit" class="btn btn--accent btn--lg">Cast encrypted ballot</button>
         </div>
       </div>
-    {% endfor %}
-
-    <div class="text-center">
-      <button type="submit" class="btn btn-success btn-lg">Cast encrypted ballot</button>
-    </div>
-  </form>
-</div>
+    </form>
+  </div>
+</section>
 {% endblock %}

@@ -1,51 +1,43 @@
 {% extends 'layout.html' %}
 {% load static %}
-{% block title %}Smart Voting System{% endblock %}
+{% block title %}Voter record{% endblock %}
 {% block content %}
-<div class="container">
-  <div style="padding-bottom: 2em;text-align:center">
-    <h1 class="text-center" style="color:#047c2a">TOP MATCH</h1>
-    <p>The classifier predicts the person that matches the given face with our top database face.</p>
-  </div>
+<section class="section">
+  <div class="container narrow">
+    <div class="center mb-3">
+      <span class="eyebrow" style="color:var(--success)">Top match</span>
+      <h1 class="mt-1 mb-0">Voter record</h1>
+      <p class="muted">The classifier matched the captured face to this entry.</p>
+    </div>
 
-  <!-- <ul>
-    <li>{{record.first_name}} {{record.last_name}}</li>
-    <li>{{record.occupation}}</li>
-    <li>{{record.residence}}, {{record.country}}</li>
-  </ul> -->
-  <div class="container">
-    <div class="row">
-      <div class="col-md-10 col-md-offset-1" style="padding-top:3em;padding-bottom:3em;-webkit-box-shadow: 0px 0px 14px 0px rgba(50, 50, 50, 0.5);
--moz-box-shadow:    0px 0px 14px 0px rgba(50, 50, 50, 0.5);
-box-shadow:         0px 0px 14px 0px rgba(50, 50, 50, 0.5);">
-        <div class="col-md-5">
-          <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-              {% if record.image %}
-                <img src="{{ record.image.url }}" class="img-responsive" style="border-radius:50%"/>
-              {% endif %}
-            </div>
-            <div class="col-md-12" style="text-align:center">
-              <h3 style="color:#d18f02"><b>{{record.first_name}} {{record.last_name}}</b></h3>
-              <h5><b>Education: </b> {{record.education}} </h5>
-              <h5><b>Occupation: </b> {{record.occupation}} </h5>
-              <h5><b>Recidence: </b> {{record.residence}}, {{record.country}}</h5>
-              <h5><b>Marital status: </b> {{record.marital_status}}
-              <h5><b>Date Recorded in System: </b> {{record.recorded_at}}</h5>
-            </div>
-          </div>
+    <div class="card card--pad-lg">
+      <div class="grid grid--2" style="align-items:start">
+        <div class="center">
+          {% if record.image %}
+            <img src="{{ record.image.url }}" alt="{{ record.first_name }}"
+                 style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:1px solid var(--line)">
+          {% else %}
+            <div class="brand__mark" style="width:110px;height:110px;border-radius:50%;font-size:2rem;margin:0 auto">{{ record.first_name|first }}</div>
+          {% endif %}
+          <h3 class="mt-2 mb-0">{{ record.first_name }} {{ record.last_name }}</h3>
         </div>
-        <div class="col-md-7">
-          <h3>Bio</h3>
-          <p>
-            {{record.bio}}
-          </p>
+        <div>
+          <p class="mb-0"><span class="muted">Education</span><br>{{ record.education|default:"—" }}</p>
+          <p class="mb-0 mt-2"><span class="muted">Occupation</span><br>{{ record.occupation|default:"—" }}</p>
+          <p class="mb-0 mt-2"><span class="muted">Residence</span><br>{{ record.residence|default:"—" }}{% if record.country %}, {{ record.country }}{% endif %}</p>
+          <p class="mb-0 mt-2"><span class="muted">Recorded</span><br>{{ record.recorded_at }}</p>
         </div>
-        <div class="col-md-12" style="margin-top:2em">
-          <a href="/Vote/vote" class="btn btn-warning"><i class="fa fa-chevron-left" aria-hidden="true"></i> Vote</a>
-        </div>
+      </div>
+      {% if record.bio %}
+        <hr class="hr">
+        <h3>Bio</h3>
+        <p class="muted mb-0">{{ record.bio }}</p>
+      {% endif %}
+      <div class="row mt-3">
+        <a class="btn btn--primary" href="{% url 'Vote:vote' %}">Continue to vote</a>
+        <a class="btn btn--ghost" href="{% url 'Vote:home' %}">Back to home</a>
       </div>
     </div>
   </div>
-</div>
+</section>
 {% endblock %}

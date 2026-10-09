@@ -1,38 +1,60 @@
 {% extends 'layout.html' %}
 {% load static %}
-{% block title %}Enrol Face Data{% endblock %}
+{% block title %}Enrol face data{% endblock %}
 {% block content %}
-<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
-  <h1 class="text-center">Enrol your Face</h1>
-  <p class="text-center">Voter ID: <strong>{{ profile.id }}</strong></p>
-  <p class="text-center">
-    Your webcam is used only to build a local face model for login. Frames are
-    never linked to your ballot.
-  </p>
+<section class="section">
+  <div class="container">
+    {% if needs_login %}
+      <div class="container narrow center" style="max-width:520px;padding:0">
+        <div class="card card--pad-lg reveal">
+          <div class="feature__icon" style="margin:0 auto 1rem">◈</div>
+          <h1>Log in to enrol your face</h1>
+          <p class="muted">Face enrolment is linked to your voter account, so you
+            need to sign in first. Then your face becomes a quick way to sign in
+            next time.</p>
+          <div class="row mt-3" style="justify-content:center">
+            <a class="btn btn--primary btn--lg" href="{% url 'Vote:login' %}">Log in</a>
+            <a class="btn btn--ghost" href="{% url 'Vote:home' %}">Back to home</a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <span class="eyebrow">Convenience factor</span>
+      <h1 class="mt-1">Enrol your face</h1>
+      <p class="muted">Voter ID: <strong>{{ profile.id }}</strong>. Your webcam is used
+        only to build a local face model for sign-in. Frames are never linked to your ballot.</p>
 
-  {% csrf_token %}
-  <div class="row">
-    <div class="col-md-6 text-center">
-      <video id="video" autoplay playsinline muted width="100%"
-             style="max-width:420px;border-radius:10px;background:#000"></video>
-    </div>
-    <div class="col-md-6">
-      <p><strong>How it works</strong></p>
-      <ol>
-        <li>Allow camera access.</li>
-        <li>Look straight at the camera in good light.</li>
-        <li>Click <em>Start capture</em> and hold still while 20 frames are taken.</li>
-        <li>Click <em>Save</em> to store and retrain the classifier.</li>
-      </ol>
-      <p>Samples captured: <span id="count">0</span></p>
-      <button id="start" class="btn btn-primary">Start capture</button>
-      <button id="save" class="btn btn-success" disabled>Save</button>
-      <a class="btn btn-default" href="{% url 'Vote:home' %}">Back</a>
-      <div id="status" style="margin-top:1em"></div>
-    </div>
+      {% csrf_token %}
+      <div class="grid grid--2 mt-3" style="align-items:start">
+        <div class="card">
+          <div class="cam">
+            <video id="video" autoplay playsinline muted></video>
+            <div class="cam__frame"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <h3>How it works</h3>
+            <ol class="muted">
+              <li>Allow camera access.</li>
+              <li>Look straight at the camera in good light.</li>
+              <li>Click <em>Start capture</em> and hold still for 20 frames.</li>
+              <li>Click <em>Save</em> to store and retrain the classifier.</li>
+            </ol>
+            <div class="row">
+              <button id="start" class="btn btn--primary">Start capture</button>
+              <button id="save" class="btn btn--ghost" disabled>Save</button>
+            </div>
+            <p class="mt-2 mb-0">Samples captured: <span class="mono" id="count">0</span></p>
+          </div>
+          <div id="status" class="mt-2"></div>
+        </div>
+      </div>
+    {% endif %}
   </div>
-</div>
+</section>
 
+{% if not needs_login %}
 <script>
 const video = document.getElementById('video');
 const canvas = document.createElement('canvas');
@@ -46,20 +68,17 @@ async function startCamera() {
     stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 } });
     video.srcObject = stream;
   } catch (err) {
-    statusEl.innerHTML = '<span class="text-danger">Camera error: ' + err.message + '</span>';
+    statusEl.innerHTML = '<div class="alert alert--error">Camera error: ' + err.message + '</div>';
   }
 }
-
 function captureFrame() {
   canvas.width = video.videoWidth || 320;
   canvas.height = video.videoHeight || 240;
   canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
   return canvas.toDataURL('image/jpeg', 0.8);
 }
-
 document.getElementById('start').addEventListener('click', async () => {
-  frames = [];
-  countEl.textContent = '0';
+  frames = []; countEl.textContent = '0';
   document.getElementById('save').disabled = true;
   for (let i = 0; i < 20; i++) {
     frames.push(captureFrame());
@@ -69,7 +88,6 @@ document.getElementById('start').addEventListener('click', async () => {
   document.getElementById('save').disabled = false;
   statusEl.textContent = 'Capture complete. Click Save.';
 });
-
 document.getElementById('save').addEventListener('click', async () => {
   statusEl.textContent = 'Saving and training...';
   const body = new FormData();
@@ -81,14 +99,14 @@ document.getElementById('save').addEventListener('click', async () => {
   });
   const data = await resp.json();
   if (data.ok) {
-    statusEl.innerHTML = '<span class="text-success">Saved ' + data.samples +
-      ' samples, trained on ' + data.trained_on + '.</span>';
+    statusEl.innerHTML = '<div class="alert alert--success">Saved ' + data.samples +
+      ' samples, trained on ' + data.trained_on + '.</div>';
   } else {
-    statusEl.innerHTML = '<span class="text-danger">' + data.error + '</span>';
+    statusEl.innerHTML = '<div class="alert alert--error">' + data.error + '</div>';
   }
 });
-
 window.addEventListener('beforeunload', () => { if (stream) stream.getTracks().forEach(t => t.stop()); });
 startCamera();
 </script>
+{% endif %}
 {% endblock %}

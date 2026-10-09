@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}নিরাপদ অনলাইন ভোটদান{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__grid">
+      <div class="reveal">
+        <span class="eyebrow">আধার-ভিত্তিক · এনক্রিপ্টেড · যাচাইযোগ্য</span>
+        <h1>বাড়ি থেকেই ভোট দিন। আপনার ভোট গণনা হয়েছে তা প্রমাণ করুন।</h1>
+        <p class="lead">
+          স্মার্টভোট যোগ্যতাকে যাচাইকৃত পরিচয়ের সাথে যুক্ত করে, প্রতিটি ব্যালট এমনভাবে
+          এনক্রিপ্ট করে যাতে কেউ তা পড়তে না পারে, এবং একটি হস্তক্ষেপ-সনাক্তকারী লেজার
+          প্রকাশ করে যা যে কেউ নিরীক্ষা করতে পারে — আপনি কীভাবে ভোট দিয়েছেন তা প্রকাশ না করেই।
+        </p>
+        <div class="row mt-3">
+          <a class="btn btn--accent btn--lg" href="{% url 'Vote:vote' %}">আপনার ভোট দিন</a>
+          {% if user.is_authenticated %}
+            <a class="btn btn--light btn--lg" href="{% url 'Vote:face_index' %}">মুখের ডেটা যোগ করুন</a>
+          {% else %}
+            <a class="btn btn--light btn--lg" href="{% url 'Vote:face_login' %}">মুখ দিয়ে সাইন ইন</a>
+          {% endif %}
+        </div>
+        <div class="hero__badges">
+          <span class="pill"><span class="dot"></span> একজন ব্যক্তি, একটি ভোট</span>
+          <span class="pill">সম্পূর্ণ এনক্রিপ্টেড ব্যালট</span>
+          <span class="pill">প্রকাশ্যে যাচাইযোগ্য লেজার</span>
+        </div>
+      </div>
+      <div class="reveal d2" aria-hidden="true">
+        <div class="ledger">
+          <div class="ledger__head"><span class="ledger__title">প্রকাশ্য লেজার</span><span class="badge badge--valid">চেইন বৈধ</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#128</span><span class="ledger__hash">9f31c0a7e2…d41b</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#129</span><span class="ledger__hash">a72b4fe19c…08aa</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#130</span><span class="ledger__hash">c58d90e0f3…72de</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#131</span><span class="ledger__hash">1e77a9bd54…f012</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#132</span><span class="ledger__hash">b0c2e6a1d8…4c9f</span><span class="ledger__ok">✓</span></div>
+          <p class="ledger__title mt-2" style="margin-bottom:0">সব ব্যালট এনক্রিপ্টেড থাকে — কোনো ভোটের বিষয়বস্তু প্রকাশ করা হয় না।</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">কেন বিশ্বাস করা যায়</span>
+    <h2 class="mt-1">যে নিরাপত্তা যাচাই করা যায়, কেবল বিশ্বাস নয়</h2>
+    <div class="grid grid--3 mt-3">
+      <div class="feature reveal"><div class="feature__icon">◆</div><h3>এনক্রিপ্টেড ব্যালট</h3><p class="muted mb-0">প্রতিটি ব্যালট নির্বাচনের পাবলিক কী দিয়ে সিল করা হয় (RSA-OAEP + AES-256-GCM)। কেবল গণনা অনুষ্ঠানই এটি খুলতে পারে।</p></div>
+      <div class="feature reveal d1"><div class="feature__icon">⛓</div><h3>হস্তক্ষেপ-সনাক্তকারী লেজার</h3><p class="muted mb-0">ব্যালট একটি হ্যাশ চেইনে যুক্ত হয়। একটি বদলালে পরের প্রতিটি লিঙ্ক ভেঙে যায় — স্পষ্টভাবে।</p></div>
+      <div class="feature reveal d2"><div class="feature__icon">✓</div><h3>আপনার রসিদ</h3><p class="muted mb-0">একটি রসিদ যা প্রমাণ করে আপনার ব্যালট গণনায় আছে — আপনার পছন্দ প্রকাশ না করেই।</p></div>
+      <div class="feature reveal"><div class="feature__icon">◈</div><h3>আধার-ভিত্তিক</h3><p class="muted mb-0">পরিচয় আধার OTP + বায়োমেট্রিক দিয়ে যাচাই হয়, যা UIDAI-এর ভিতরে মেলানো হয়। বায়োমেট্রিক এখানে কখনও সংরক্ষিত হয় না।</p></div>
+      <div class="feature reveal d1"><div class="feature__icon">☰</div><h3>একজন ব্যক্তি, একটি ভোট</h3><p class="muted mb-0">অনন্য যাচাইকৃত পরিচয় ও একবার-ব্যবহার্য টোকেন ডাবল ভোটিং ব্লক করে ও সনাক্ত করে।</p></div>
+      <div class="feature reveal d2"><div class="feature__icon">◎</div><h3>নকশাতেই গোপনীয়তা</h3><p class="muted mb-0">ভোটার আইডি (EPIC) ও পরিচয় ডেটা বিশ্রামে এনক্রিপ্টেড; ব্যালটের কোনো মালিক নেই। কেউ ভোট ট্র্যাক করতে পারে না।</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="container">
+    <div class="grid grid--2" style="align-items:center">
+      <div>
+        <span class="eyebrow">এটি কীভাবে কাজ করে</span>
+        <h2 class="mt-1">যেকোনো জায়গা থেকে, চার ধাপ</h2>
+        <div class="steps mt-3">
+          <div class="step"><h3 class="mb-0">সাইন ইন করুন</h3><p class="muted mb-0">পাসওয়ার্ড, সাথে সুবিধার জন্য ঐচ্ছিক মুখ মিল।</p></div>
+          <div class="step"><h3 class="mb-0">পরিচয় যাচাই করুন</h3><p class="muted mb-0">আধার OTP + বায়োমেট্রিক (মুখ, আঙুলের ছাপ বা আইরিস) UIDAI দ্বারা 1:1 মিল।</p></div>
+          <div class="step"><h3 class="mb-0">এনক্রিপ্টেড ব্যালট দিন</h3><p class="muted mb-0">প্রতিটি প্রতিযোগিতার জন্য একজন প্রার্থী বাছুন। ব্যালট সিল করে নামহীনভাবে যুক্ত হয়।</p></div>
+          <div class="step"><h3 class="mb-0">রসিদ যাচাই করুন</h3><p class="muted mb-0">যেকোনো সময় প্রকাশ্য লেজারে অন্তর্ভুক্তি নিশ্চিত করুন, আপনার ভোট প্রকাশ না করেই।</p></div>
+        </div>
+      </div>
+      <div class="card card--pad-lg reveal d1">
+        <span class="pill pill--accent">চেষ্টা করতে প্রস্তুত?</span>
+        <h3 class="mt-2">ডেমো চালান</h3>
+        <p class="muted">ডেমো ভোটার হিসেবে সাইন ইন করুন, মক আধার প্রবাহে যাচাই করুন, ভোট দিন ও লেজার দেখুন।</p>
+        <a class="btn btn--primary btn--block" href="{% url 'Vote:login' %}">ভোট দিতে লগ ইন</a>
+        <a class="btn btn--ghost btn--block mt-1" href="{% url 'Vote:bulletin' %}">প্রকাশ্য লেজার দেখুন</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card card--pad-lg">
+      <div class="grid grid--2">
+        <div><span class="eyebrow">যোগাযোগ করুন</span><h3 class="mt-1">সিস্টেম নিয়ে প্রশ্ন?</h3><p class="muted mb-0">আমাদের সাথে যোগাযোগ করুন, 24 ঘণ্টার মধ্যে উত্তর দেব।</p></div>
+        <div>
+          <p class="mb-0"><span class="muted">স্থান</span><br>সিকিম মণিপাল ইনস্টিটিউট অফ টেকনোলজি, মাজিতার</p>
+          <p class="mb-0 mt-2"><span class="muted">ইমেইল</span><br>srivastavaanurag79@gmail.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

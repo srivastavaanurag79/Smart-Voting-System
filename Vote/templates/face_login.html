@@ -1,22 +1,27 @@
 {% extends 'layout.html' %}
 {% load static %}
-{% block title %}Face Sign-in{% endblock %}
+{% block title %}Face sign-in{% endblock %}
 {% block content %}
-<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
-  <h1 class="text-center">Face Sign-in</h1>
-  <p class="text-center">Look at the camera and click <em>Verify</em>.</p>
+<section class="section">
+  <div class="container narrow center" style="max-width:520px">
+    <span class="eyebrow">Convenience sign-in</span>
+    <h1 class="mt-1">Face sign-in</h1>
+    <p class="muted">Look at the camera and click <em>Verify</em>.</p>
 
-  {% csrf_token %}
-  <div class="text-center">
-    <video id="video" autoplay playsinline muted width="100%"
-           style="max-width:420px;border-radius:10px;background:#000"></video>
-    <div style="margin-top:1em">
-      <button id="verify" class="btn btn-primary">Verify</button>
-      <a class="btn btn-default" href="{% url 'Vote:login' %}">Use password instead</a>
+    {% csrf_token %}
+    <div class="card card--pad-lg mt-3">
+      <div class="cam" style="max-width:360px;margin:0 auto">
+        <video id="video" autoplay playsinline muted></video>
+        <div class="cam__frame"></div>
+      </div>
+      <div class="row mt-3" style="justify-content:center">
+        <button id="verify" class="btn btn--primary btn--lg">Verify face</button>
+        <a class="btn btn--ghost" href="{% url 'Vote:login' %}">Use password instead</a>
+      </div>
+      <div id="status" class="mt-2"></div>
     </div>
-    <div id="status" style="margin-top:1em"></div>
   </div>
-</div>
+</section>
 
 <script>
 const video = document.getElementById('video');
@@ -28,7 +33,7 @@ async function startCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 } });
     video.srcObject = stream;
   } catch (err) {
-    statusEl.innerHTML = '<span class="text-danger">Camera error: ' + err.message + '</span>';
+    statusEl.innerHTML = '<div class="alert alert--error">Camera error: ' + err.message + '</div>';
   }
 }
 startCamera();
@@ -47,10 +52,10 @@ document.getElementById('verify').addEventListener('click', async () => {
   });
   const data = await resp.json();
   if (data.ok) {
-    statusEl.innerHTML = '<span class="text-success">Welcome, ' + data.voter + '. Redirecting...</span>';
+    statusEl.innerHTML = '<div class="alert alert--success">Welcome, ' + data.voter + '. Redirecting...</div>';
     window.location.href = data.redirect;
   } else {
-    statusEl.innerHTML = '<span class="text-danger">' + data.error + '</span>';
+    statusEl.innerHTML = '<div class="alert alert--error">' + data.error + '</div>';
   }
 });
 </script>

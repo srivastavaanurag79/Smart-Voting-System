@@ -1,87 +1,41 @@
-<!doctype html>
-<html>
+{% extends 'layout.html' %}
 {% load static %}
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, iniital-scale=1;">
-<title>Smart Voting System</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% block title %}About{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container narrow">
+    <span class="eyebrow">About</span>
+    <h1 class="mt-1">A prototype for trustworthy online voting</h1>
+    <p class="muted">SmartVote explores how encrypted, anonymous ballots and a
+      publicly verifiable ledger can bring transparency to elections — from home,
+      from any device.</p>
 
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <div class="card card--pad-lg mt-3">
+      <h3>What it does</h3>
+      <div class="grid grid--2 mt-2">
+        <p class="mb-0"><strong>Encrypted ballots.</strong> <span class="muted">Sealed to the election public key; only a tally ceremony can open them.</span></p>
+        <p class="mb-0"><strong>Anonymous by design.</strong> <span class="muted">No stored link between a voter and their choice.</span></p>
+        <p class="mb-0"><strong>Aadhaar-anchored.</strong> <span class="muted">OTP + biometric matched inside UIDAI; biometrics never stored here.</span></p>
+        <p class="mb-0"><strong>Verifiable.</strong> <span class="muted">A hash-chained ledger and per-voter receipts anyone can check.</span></p>
+      </div>
+    </div>
 
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'Vote/credits.css' %}">
-<link rel="shortcut icon" type="image/x-icon" href="2018-06-11.png" />
-    <style>
+    <div class="card card--pad-lg mt-3">
+      <h3>Designed by</h3>
+      <p class="mb-1"><strong>Anurag Srivastava</strong></p>
+      <p class="muted">Dedicated to enabling fair elections.</p>
+      <div class="row">
+        <a class="btn btn--ghost" href="https://github.com/haraaami">GitHub</a>
+        <a class="btn btn--ghost" href="https://twitter.com/card__hock">Twitter</a>
+        <a class="btn btn--ghost" href="https://linkedin.com/in/anurag-srivastava-396987126/">LinkedIn</a>
+        <a class="btn btn--ghost" href="https://instagram.com/card__hock/">Instagram</a>
+      </div>
+    </div>
 
-.navbar-brand{
-  float: none;
-</style>
-</head>
-<body>
-   <nav class="navbar navbar-default navbar-fixed-top">
-     <div class="container-fluid">
-       <div class=" navbar-header">
-           <img src="{% static 'Vote/2018-06-11.png' %}" width=150 height=50>
-           <a class="navbar-brand" href="#">Smart Voting System</a>
-	   </div>
-      <ul class="nav navbar-nav">
-       <li><a href="{% url 'Vote:home' %}">Home</a></li>
-       <li><a href="{% url 'Vote:vote' %}">Vote</a></li>
-       <li><a href="{% url 'Vote:results' %}">Results</a> </li>
-	   <li class="active"><a href ="{% url 'Vote:about' %}">About</a></li>
-	   <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">English
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Hindi</a></li>
-        </ul>
-      </li>
-       </ul>
-
-      {% if user.is_authenticated %}
-       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'Vote:logout' %}"><span class="glyphicon glyphicon-log-in"></span> Log Out</a></li>
-       </ul>
-      {% else %}
-       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'Vote:login' %}"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
-       </ul>
-      {% endif %}
-     </div>
-    </nav>
-	<div class="page-header bg-2">
-  </br>
-<h1 align="center" ><strong>Smart Voting System </strong></h1>
-<h3 align="center">A fast and efficient way to vote sitting at home.</h3>
-</br>
-   </div>
-   <!----row column---->
-   <div class="row bg-10">
-              <div class="col-lg-1"></div>
-              <div class="col-lg-4" class="slideanim" class="well"><img src="{% static 'Vote/anurag1.png' %}" class="img-thumbnail" ></div>
-       	 <div class="col-lg-6"><h2 align="center"><strong>Webapp Designed By:</strong></h1>
-                  <h3 align="center"><br><strong>Anurag Srivastava</strong></h3>
-                  <h4 align="center">This webapp is dedicated towards enabling fair elections.</h4>
-                  <h4 align="center"><br><strong>Follow me on:</strong></h4>
-                  <a href="https://github.com/haraaami" class="twitter"><h4 align="center"> Github </h4></a>
-                  <a href="https://twitter.com/card__hock" class="twitter"><h4 align="center"> Twitter </h4></a>
-                  <a href="https://linkedin.com/in/anurag-srivastava-396987126/" class="linkedin"><h4 align="center"> LinkedIn </h4></a>
-                  <a href="https://instagram.com/card__hock/" class="instagram"><h4 align="center"> Instagram </h4>></a>
-
-	 </div>
-	 </div>
-<footer class="container-fluid  bg-4 text-center">
-  <a href="#myPage" title="To Top">
-    <span class="glyphicon glyphicon-chevron-up"></span>
-  </a>
-  <p>&copy; Copyright <strong>Smart Voting System Team</strong>. All Rights Reserved</p>
-  <p>MADE WITH SKILL! NOT LOVE.</a></p>
-</footer>
-
-
-
-</body>
-</html>
+    <div class="alert alert--warning mt-3">
+      <strong>Prototype notice.</strong> This is not certified for a real, binding
+      election. See SECURITY.md and the docs for the honest list of limits.
+    </div>
+  </div>
+</section>
+{% endblock %}

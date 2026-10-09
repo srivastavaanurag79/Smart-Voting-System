@@ -1,114 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'layout.html' %}
 {% load static %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, iniital-scale=1;">
-    <title>Smart Voting System</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'Vote/credits.css' %}">
-<style>
-footer .glyphicon {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #f4511e;
-}
-.navbar-brand{
-  float: none;
-</style>
-</head>
-<body>
-<nav class="navbar navbar-default navbar-fixed-top">
-     <div class="container-fluid">
-       <div class=" navbar-header">
-           <img src="{% static 'Vote/2018-06-11.png' %}" width=150 height=50>
-           <a class="navbar-brand" href="#">Smart Voting System</a>
-	   </div>
-      <ul class="nav navbar-nav">
-       <li><a href="{% url 'Vote:home' %}">Home</a></li>
-       <li><a href="{% url 'Vote:vote' %}">Vote</a></li>
-       <li><a href="{% url 'Vote:results' %}">Results</a> </li>
-	   <li><a href ="{% url 'Vote:about' %}">About</a></li>
-	   <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">English
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Hindi</a></li>
-        </ul>
-      </li>
-       </ul>
-
-      {% if user.is_authenticated %}
-       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'Vote:logout' %}"><span class="glyphicon glyphicon-log-in"></span> Log Out</a></li>
-       </ul>
-      {% else %}
-       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'Vote:login' %}"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
-       </ul>
-      {% endif %}
-     </div>
-    </nav>
-<div class="page-header bg-2">
-</br>
-<h1 align="center" ><strong>Smart Voting System </strong></h1>
-<h3 align="center">A fast and efficient way to vote sitting at home.</h3>
-</br>
-   </div>
-
-<div class="row bg-10">
-      <div class="col-lg-1"></div>
-     <div class="col-lg-4" class="slideanim" class="well"><img src="{% static 'Vote/bitmoji-20190722104244.png' %}" class="img-thumbnail" ></div>
-	 <div class="col-lg-6">
-   </br></br>
-   </br></br>
-   <h1 align="center"><strong>Invalid Credentials</strong></h1>
-<h2 align="center"><strong> Please stop embarrassing yourself and use your own credentials.</strong></h2>
-<h1 align="center"><strong> Forgot Password??</strong></h1>
-<h1 align="center"><strong> Contact your Admin below..</strong></h1>
-	 </div>
-	 </div>
-
-
-   <div class="container-fluid bg-4">
-   <h2 class="text-center">Get In Touch</h2>
-   </br>
-   <div class="row row2">
-     <div class="col-sm-5">
-       <p><strong>Contact Us</strong> and we'll get back to you within 24 hours.</p>
-       <p><span class="glyphicon glyphicon-map-marker"></span>  Sikkim Manipal Institute of Technology, Majitar</p>
-       <p><span class="glyphicon glyphicon-envelope"></span> srivastavaanurag79@gmail.com</p>
-     </div>
-     <div class="col-sm-7">
-       <div class="row row2">
-         <div class="col-sm-6 form-group">
-           <input class="form-control" id="name" name="name" placeholder="Name" type="text" required>
-         </div>
-         <div class="col-sm-6 form-group">
-           <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
-         </div>
-       </div>
-       <textarea class="form-control" id="comments" name="comments" placeholder="Comment" rows="5"></textarea><br>
-       <div class="row row2">
-         <div class="col-sm-12 form-group">
-           <button class="btn btn-default pull-right" type="submit">Send</button>
-         </div>
-       </div>
-     </div>
-   </div>
-<footer class="container-fluid  bg-4 text-center">
-  <a href="#myPage" title="To Top">
-    <span class="glyphicon glyphicon-chevron-up"></span>
-  </a>
-  <p>&copy; Copyright <strong>Smart Voting System Team</strong>. All Rights Reserved</p>
-  <p>MADE WITH SKILL! NOT LOVE.</a></p>
-</footer>
-
-</body>
-</html>
+{% block title %}Invalid credentials{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container narrow center" style="max-width:560px">
+    <div class="card card--pad-lg reveal">
+      <div class="feature__icon" style="margin:0 auto 1rem;background:var(--danger-soft);color:var(--danger)">!</div>
+      <h1>Invalid credentials</h1>
+      <p class="muted">The username or password is incorrect. Please try again with your own credentials.</p>
+      <div class="row mt-3" style="justify-content:center">
+        <a class="btn btn--primary" href="{% url 'Vote:login' %}">Try again</a>
+        <a class="btn btn--ghost" href="{% url 'Vote:face_login' %}">Sign in with face</a>
+      </div>
+      <hr class="hr">
+      <p class="muted mb-1">Forgot your password? Contact your election administrator.</p>
+      <p class="muted mb-0" style="font-size:.85rem">srivastavaanurag79@gmail.com</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

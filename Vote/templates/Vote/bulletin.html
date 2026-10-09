@@ -1,42 +1,48 @@
 {% extends 'layout.html' %}
 {% load static %}
-{% block title %}Public Ledger{% endblock %}
+{% block title %}Public ledger{% endblock %}
 {% block content %}
-<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
-  <h1 class="text-center">Public Bulletin Board</h1>
-  <p class="text-center">
-    Every ballot is appended to a hash-chained ledger. Each row commits to the
-    previous one, so any change to history is detectable.
-  </p>
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">Transparency</span>
+    <h1 class="mt-1">Public bulletin board</h1>
+    <p class="muted" style="max-width:60ch">Every ballot is appended to a hash-chained
+      ledger. Each row commits to the previous one, so any change to history is detectable.</p>
 
-  <p class="text-center">
-    Ledger integrity:
-    {% if chain_valid %}
-      <span class="label label-success">valid</span>
-    {% else %}
-      <span class="label label-danger">BROKEN</span>
-    {% endif %}
-    &middot; {{ chain|length }} ballot(s)
-  </p>
+    <div class="row mt-3">
+      <span class="pill pill--light">
+        Ledger integrity:
+        {% if chain_valid %}<span class="badge badge--valid">valid</span>{% else %}<span class="badge badge--broken">BROKEN</span>{% endif %}
+      </span>
+      <span class="pill pill--light">{{ chain|length }} ballot(s)</span>
+    </div>
 
-  <table class="table table-striped">
-    <thead>
-      <tr><th>#</th><th>Receipt</th><th>Previous hash</th><th>Entry hash</th><th>Time</th></tr>
-    </thead>
-    <tbody>
-      {% for block in chain %}
-        <tr>
-          <td>{{ block.index }}</td>
-          <td><code>{{ block.receipt_hash|slice:":16" }}…</code></td>
-          <td><code>{{ block.prev_hash|slice:":16" }}…</code></td>
-          <td><code>{{ block.entry_hash|slice:":16" }}…</code></td>
-          <td>{{ block.created_at }}</td>
-        </tr>
-      {% empty %}
-        <tr><td colspan="5" class="text-center">No ballots yet.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <p class="text-center"><a href="{% url 'Vote:verify_ballot' %}">Verify your receipt</a></p>
-</div>
+    <div class="card mt-3" style="padding:0;overflow:hidden">
+      <table class="table">
+        <thead>
+          <tr><th>Ballot ID</th><th>Position</th><th>Entry hash</th><th>Chained from</th><th>Time</th></tr>
+        </thead>
+        <tbody>
+          {% for block in chain %}
+            <tr>
+              <td class="mono" style="font-weight:600">{{ block.public_id }}</td>
+              <td class="muted">#{{ block.index }}</td>
+              <td><code title="{{ block.entry_hash }}">{{ block.entry_hash|slice:":18" }}…</code></td>
+              <td><code title="{{ block.prev_hash }}">{{ block.prev_hash|slice:":18" }}…</code></td>
+              <td class="muted">{{ block.created_at }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="center muted" style="padding:2rem">No ballots yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="muted mt-3" style="font-size:.85rem">
+      The <strong>Ballot ID</strong> is a short, human-readable label derived from the
+      encrypted ballot. The hash columns are the cryptographic proof of position and
+      order — hover to see the full value. Neither reveals your vote.
+    </p>
+    <p class="mt-3"><a href="{% url 'Vote:verify_ballot' %}">Verify your receipt →</a></p>
+  </div>
+</section>
 {% endblock %}

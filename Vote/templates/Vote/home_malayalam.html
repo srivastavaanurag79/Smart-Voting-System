@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}സുരക്ഷിത ഓൺലൈൻ വോട്ടിംഗ്{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__grid">
+      <div class="reveal">
+        <span class="eyebrow">ആധാർ അധിഷ്ഠിതം · എൻക്രിപ്റ്റ് ചെയ്തത് · പരിശോധിക്കാവുന്നത്</span>
+        <h1>വീട്ടിൽ നിന്ന് വോട്ട് ചെയ്യൂ. നിങ്ങളുടെ വോട്ട് എണ്ണിയെന്ന് തെളിയിക്കൂ.</h1>
+        <p class="lead">
+          സ്മാർട്ട്വോട്ട് യോഗ്യതയെ പരിശോധിച്ച സ്ഥിരീകരണത്തോട് ബന്ധിപ്പിക്കുന്നു, ഓരോ
+          ബാലറ്റും ആർക്കും വായിക്കാൻ കഴിയാത്തവിധം എൻക്രിപ്റ്റ് ചെയ്യുന്നു, കൂടാതെ
+          കൃത്രിമത്വം കണ്ടെത്തുന്ന ഒരു ലെഡ്ജർ പ്രസിദ്ധീകരിക്കുന്നു — നിങ്ങൾ എങ്ങനെ
+          വോട്ട് ചെയ്തു എന്ന് വെളിപ്പെടുത്താതെ.
+        </p>
+        <div class="row mt-3">
+          <a class="btn btn--accent btn--lg" href="{% url 'Vote:vote' %}">നിങ്ങളുടെ വോട്ട് രേഖപ്പെടുത്തൂ</a>
+          {% if user.is_authenticated %}
+            <a class="btn btn--light btn--lg" href="{% url 'Vote:face_index' %}">മുഖ ഡാറ്റ ചേർക്കൂ</a>
+          {% else %}
+            <a class="btn btn--light btn--lg" href="{% url 'Vote:face_login' %}">മുഖം കൊണ്ട് സൈൻ ഇൻ</a>
+          {% endif %}
+        </div>
+        <div class="hero__badges">
+          <span class="pill"><span class="dot"></span> ഒരു വ്യക്തി, ഒരു വോട്ട്</span>
+          <span class="pill">പൂർണ്ണമായി എൻക്രിപ്റ്റ് ചെയ്ത ബാലറ്റുകൾ</span>
+          <span class="pill">പൊതുവിൽ പരിശോധിക്കാവുന്ന ലെഡ്ജർ</span>
+        </div>
+      </div>
+      <div class="reveal d2" aria-hidden="true">
+        <div class="ledger">
+          <div class="ledger__head"><span class="ledger__title">പൊതു ലെഡ്ജർ</span><span class="badge badge--valid">ചെയിൻ സാധുവാണ്</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#128</span><span class="ledger__hash">9f31c0a7e2…d41b</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#129</span><span class="ledger__hash">a72b4fe19c…08aa</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#130</span><span class="ledger__hash">c58d90e0f3…72de</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#131</span><span class="ledger__hash">1e77a9bd54…f012</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#132</span><span class="ledger__hash">b0c2e6a1d8…4c9f</span><span class="ledger__ok">✓</span></div>
+          <p class="ledger__title mt-2" style="margin-bottom:0">എല്ലാ ബാലറ്റുകളും എൻക്രിപ്റ്റ് ചെയ്തിരിക്കുന്നു — വോട്ട് ഉള്ളടക്കം പ്രസിദ്ധീകരിക്കുന്നില്ല.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">എന്തുകൊണ്ട് വിശ്വസിക്കാം</span>
+    <h2 class="mt-1">വിശ്വസിക്കാൻ മാത്രമല്ല, പരിശോധിക്കാവുന്ന സുരക്ഷ</h2>
+    <div class="grid grid--3 mt-3">
+      <div class="feature reveal"><div class="feature__icon">◆</div><h3>എൻക്രിപ്റ്റ് ചെയ്ത ബാലറ്റുകൾ</h3><p class="muted mb-0">ഓരോ ബാലറ്റും തിരഞ്ഞെടുപ്പിന്റെ പൊതു കീ ഉപയോഗിച്ച് സീൽ ചെയ്യുന്നു (RSA-OAEP + AES-256-GCM). എണ്ണൽ ചടങ്ങിന് മാത്രമേ തുറക്കാൻ കഴിയൂ.</p></div>
+      <div class="feature reveal d1"><div class="feature__icon">⛓</div><h3>കൃത്രിമത്വം കണ്ടെത്തുന്ന ലെഡ്ജർ</h3><p class="muted mb-0">ബാലറ്റുകൾ ഒരു ഹാഷ് ചെയിനിൽ ചേർക്കുന്നു. ഒന്ന് മാറ്റിയാൽ അതിനു ശേഷമുള്ള ഓരോ കണ്ണിയും തകരും — വ്യക്തമായി.</p></div>
+      <div class="feature reveal d2"><div class="feature__icon">✓</div><h3>നിങ്ങളുടെ രസീത്</h3><p class="muted mb-0">നിങ്ങളുടെ ബാലറ്റ് എണ്ണത്തിലുണ്ടെന്ന് തെളിയിക്കുന്ന രസീത് — നിങ്ങളുടെ തിരഞ്ഞെടുപ്പ് വെളിപ്പെടുത്താതെ.</p></div>
+      <div class="feature reveal"><div class="feature__icon">◈</div><h3>ആധാർ അധിഷ്ഠിതം</h3><p class="muted mb-0">സ്ഥിരീകരണം ആധാർ OTP + ബയോമെട്രിക് വഴി പരിശോധിക്കുന്നു, UIDAI-ക്കുള്ളിൽ പൊരുത്തപ്പെടുത്തുന്നു. ബയോമെട്രിക് ഇവിടെ ഒരിക്കലും സൂക്ഷിക്കുന്നില്ല.</p></div>
+      <div class="feature reveal d1"><div class="feature__icon">☰</div><h3>ഒരു വ്യക്തി, ഒരു വോട്ട്</h3><p class="muted mb-0">അദ്വിതീയ പരിശോധിച്ച സ്ഥിരീകരണവും ഒറ്റത്തവണ ടോക്കണുകളും ഇരട്ട വോട്ടിംഗ് തടയുകയും കണ്ടെത്തുകയും ചെയ്യുന്നു.</p></div>
+      <div class="feature reveal d2"><div class="feature__icon">◎</div><h3>രൂപകൽപ്പനയിൽ തന്നെ സ്വകാര്യത</h3><p class="muted mb-0">വോട്ടർ ഐഡികളും (EPIC) സ്ഥിരീകരണ ഡാറ്റയും എൻക്രിപ്റ്റ് ചെയ്തിരിക്കുന്നു; ബാലറ്റുകൾക്ക് ഉടമയില്ല. ആർക്കും വോട്ട് കണ്ടെത്താനാവില്ല.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="container">
+    <div class="grid grid--2" style="align-items:center">
+      <div>
+        <span class="eyebrow">ഇത് എങ്ങനെ പ്രവർത്തിക്കുന്നു</span>
+        <h2 class="mt-1">എവിടെ നിന്നും, നാല് ഘട്ടങ്ങൾ</h2>
+        <div class="steps mt-3">
+          <div class="step"><h3 class="mb-0">സൈൻ ഇൻ ചെയ്യൂ</h3><p class="muted mb-0">പാസ്വേഡ്, കൂടെ സൗകര്യത്തിനായി ഓപ്ഷണൽ മുഖ പൊരുത്തം.</p></div>
+          <div class="step"><h3 class="mb-0">സ്ഥിരീകരണം പരിശോധിക്കൂ</h3><p class="muted mb-0">ആധാർ OTP + ബയോമെട്രിക് (മുഖം, വിരലടയാളം അല്ലെങ്കിൽ ഐറിസ്) UIDAI 1:1 പൊരുത്തം.</p></div>
+          <div class="step"><h3 class="mb-0">എൻക്രിപ്റ്റ് ചെയ്ത വോട്ട് രേഖപ്പെടുത്തൂ</h3><p class="muted mb-0">ഓരോ മത്സരത്തിനും ഒരു സ്ഥാനാർത്ഥിയെ തിരഞ്ഞെടുക്കൂ. ബാലറ്റ് സീൽ ചെയ്ത് അജ്ഞാതമായി ചേർക്കുന്നു.</p></div>
+          <div class="step"><h3 class="mb-0">രസീത് പരിശോധിക്കൂ</h3><p class="muted mb-0">എപ്പോൾ വേണമെങ്കിലും പൊതു ലെഡ്ജറിൽ ഉൾപ്പെടുത്തൽ സ്ഥിരീകരിക്കൂ, വോട്ട് വെളിപ്പെടുത്താതെ.</p></div>
+        </div>
+      </div>
+      <div class="card card--pad-lg reveal d1">
+        <span class="pill pill--accent">പരീക്ഷിക്കാൻ തയ്യാറാണോ?</span>
+        <h3 class="mt-2">ഡെമോ പ്രവർത്തിപ്പിക്കൂ</h3>
+        <p class="muted">ഡെമോ വോട്ടറായി സൈൻ ഇൻ ചെയ്യൂ, മോക്ക് ആധാർ പ്രക്രിയയിൽ പരിശോധിക്കൂ, വോട്ട് ചെയ്യൂ, ലെഡ്ജർ കാണൂ.</p>
+        <a class="btn btn--primary btn--block" href="{% url 'Vote:login' %}">വോട്ട് ചെയ്യാൻ ലോഗിൻ</a>
+        <a class="btn btn--ghost btn--block mt-1" href="{% url 'Vote:bulletin' %}">പൊതു ലെഡ്ജർ കാണൂ</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card card--pad-lg">
+      <div class="grid grid--2">
+        <div><span class="eyebrow">ബന്ധപ്പെടുക</span><h3 class="mt-1">സിസ്റ്റത്തെക്കുറിച്ച് ചോദ്യങ്ങളുണ്ടോ?</h3><p class="muted mb-0">ഞങ്ങളെ ബന്ധപ്പെടുക, 24 മണിക്കൂറിനുള്ളിൽ മറുപടി നൽകും.</p></div>
+        <div>
+          <p class="mb-0"><span class="muted">സ്ഥലം</span><br>സിക്കിം മണിപാൽ ഇൻസ്റ്റിറ്റ്യൂട്ട് ഓഫ് ടെക്നോളജി, മജിതാർ</p>
+          <p class="mb-0 mt-2"><span class="muted">ഇമെയിൽ</span><br>srivastavaanurag79@gmail.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,144 +1,132 @@
-<!doctype html>
-<html>
-<head>
-    {% load static %}
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, iniital-scale=1;">
-<title>Smart Voting System</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Secure online voting{% endblock %}
+{% block content %}
 
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'Vote/home.css' %}">
-<style>
-footer .glyphicon {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #f4511e;
-}
-.navbar-brand{
-  float: none;
-</style>
-</head>
-<body>
-   <nav class="navbar navbar-default navbar-fixed-top">
-     <div class="container-fluid">
-       <div class=" navbar-header">
-           <img src="{% static 'Vote/2018-06-11.png' %}" alt="some text" width=150 height=50>
-           <a class="navbar-brand" href="#">Smart Voting System</a>
-       </div>
-      <ul class="nav navbar-nav">
-       <li class="active"><a href="#">Home</a></li>
-       <li><a href="{% url 'Vote:face_index' %}">Add Facedata</a></li>
-       <li><a href="{% url 'Vote:vote' %}">Vote</a></li>
-       <li><a href="{% url 'Vote:results' %}">Results</a> </li>
-       <li><a href="{% url 'Vote:bulletin' %}">Public Ledger</a></li>
-       <li><a href="{% url 'Vote:verify_ballot' %}">Verify Vote</a></li>
-       <li><a href="{% url 'Vote:face_login' %}">Face Sign-in</a></li>
-       <li><a href="/admin">Admin</a></li>
-	   <li><a href ="{% url 'Vote:about' %}">About</a></li>
-	   <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">English
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="{% url 'Vote:home_hindi' %}">Hindi</a></li>
-        </ul>
-      </li>
-       </ul>
-
-        {% if user.is_authenticated %}
-       <ul class="nav navbar-nav navbar-right">
-       <li><a href="{% url 'Vote:logout' %}"><span class="glyphicon glyphicon-log-in"></span> Log Out</a></li>
-       </ul>
-         {% else %}
-         <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'Vote:login' %}"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
-        </ul>
-         {% endif %}
-     </div>
-    </nav>
-   <div class="page-header bg-6">
-   <h1 align="center" ><strong>Smart Voting System </strong></h1>
- <h3 align="center">A fast and efficient way to vote sitting at home.</h3>
-   </div>
-   <!----row column---->
-   <div class="row">
-     <div class="col-lg-4" class="slideanim"><img src="{% static 'Vote/smart-voting-system.jpg' %}" class="img-thumbnail" ></div>
-	 <div class="col-lg-8">
-   <h4 align="justify">
-      <strong>Smart voting System</strong> uses Facial Recognition along side traditionl passwords which provides an additional security.
-       This Web App is designed to serve the needs of organisation and institutions.
-       </br>
-       </br>
-       <strong>Smart Voting System </strong>doesn’t limit the number of polls you can create. Unlike the vast majority of voting websites you can continue using the free service as often as you’d like.
-        It’s a quick and easy way to organise elections for an organisation or an institution and let your colleagues or CR's cast their vote.
-       </br></br> <strong>Contact the Admin </strong> to get your Login Credentials.
-        Once you get the Login Credentials you can add your Face Data and you are ready to vote.
-      </h4>
-   </div>
-	</div>
-    <div class="row bg-5" >
-     <div class="col-lg-8" class="slideanim">
-     <h2>   <strong>What makes this web app so special?</strong></h2>
-          <h4 align="justify">
-       <strong>  Smart Voting System</strong> has a very minimalistic, user-friendly design.
-         </br>There’s no hassle, no fuss, and no lengthy steps asking you to fill out information. In fact, you don’t even have to sign up for an account just get your login creadentials from the admin of your organisation. This voting website doesn’t need your mobile number, doesn’t save your email address for sending newsletters and would never sell your contact information to third party advertisers!!
-
-     	   </h4>
-     </div>
-	    <div class="col-lg-4"><img src="{% static 'Vote/e_vote.jpg' %}" class="img-thumbnail" ></div>
-	  </div>
-	  </div>
-	  <div class="row">
-		<div class="col-lg-12" align="center">
-    <h2>Voting Just a <strong>Click</strong> Away</h2>
-</br>
-        <a href="{% url 'Vote:vote' %}"><button type="button" class="btn1">Vote</button><br><br></a>
-		</div>
-	   </div>
-<script>
-$(document).ready(function(){
-    $('[data-toggle="popover"]').popover();
-});
-</script>
-	<div class="container-fluid bg-4">
-  <h2 class="text-center">Get In Touch</h2>
-  </br>
-  <div class="row row2">
-    <div class="col-sm-5">
-      <p><strong>Contact Us</strong> and we'll get back to you within 24 hours.</p>
-      <p><span class="glyphicon glyphicon-map-marker"></span>  Sikkim Manipal Institute of Technology, Majitar</p>
-      <p><span class="glyphicon glyphicon-envelope"></span> srivastavaanurag79@gmail.com</p>
-    </div>
-    <div class="col-sm-7">
-      <div class="row row2">
-        <div class="col-sm-6 form-group">
-          <input class="form-control" id="name" name="name" placeholder="Name" type="text" required>
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__grid">
+      <div class="reveal">
+        <span class="eyebrow">Aadhaar-anchored · Encrypted · Verifiable</span>
+        <h1>Vote from home. Prove your vote counted.</h1>
+        <p class="lead">
+          SmartVote binds eligibility to a verified identity, encrypts every
+          ballot so no one can read it, and publishes a tamper-evident ledger
+          anyone can audit — without ever revealing how you voted.
+        </p>
+        <div class="row mt-3">
+          <a class="btn btn--accent btn--lg" href="{% url 'Vote:vote' %}">Cast your vote</a>
+          {% if user.is_authenticated %}
+            <a class="btn btn--light btn--lg" href="{% url 'Vote:face_index' %}">Enrol face data</a>
+          {% else %}
+            <a class="btn btn--light btn--lg" href="{% url 'Vote:face_login' %}">Sign in with face</a>
+          {% endif %}
         </div>
-        <div class="col-sm-6 form-group">
-          <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
+        <div class="hero__badges">
+          <span class="pill"><span class="dot"></span> One person, one vote</span>
+          <span class="pill">End-to-end encrypted ballots</span>
+          <span class="pill">Publicly verifiable ledger</span>
         </div>
       </div>
-      <textarea class="form-control" id="comments" name="comments" placeholder="Comment" rows="5"></textarea><br>
-      <div class="row row2">
-        <div class="col-sm-12 form-group">
-          <button class="btn btn-default pull-right" type="submit">Send</button>
+
+      <div class="reveal d2" aria-hidden="true">
+        <div class="ledger">
+          <div class="ledger__head">
+            <span class="ledger__title">Public ledger</span>
+            <span class="badge badge--valid">chain valid</span>
+          </div>
+          <div class="ledger__row"><span class="ledger__idx">#128</span><span class="ledger__hash">9f31c0a7e2…d41b</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#129</span><span class="ledger__hash">a72b4fe19c…08aa</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#130</span><span class="ledger__hash">c58d90e0f3…72de</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#131</span><span class="ledger__hash">1e77a9bd54…f012</span><span class="ledger__ok">✓</span></div>
+          <div class="ledger__row"><span class="ledger__idx">#132</span><span class="ledger__hash">b0c2e6a1d8…4c9f</span><span class="ledger__ok">✓</span></div>
+          <p class="ledger__title mt-2" style="margin-bottom:0">All ballots stay encrypted — no vote contents are published.</p>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-<footer class="container-fluid  bg-4 text-center">
-  <a href="#myPage" title="To Top">
-    <span class="glyphicon glyphicon-chevron-up"></span>
-  </a>
-  <p>&copy; Copyright <strong>Smart Voting System Team</strong>. All Rights Reserved</p>
-  <p>MADE WITH SKILL! NOT LOVE.</a></p>
-</footer>
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">Why it can be trusted</span>
+    <h2 class="mt-1">Security you can inspect, not just believe</h2>
+    <div class="grid grid--3 mt-3">
+      <div class="feature reveal">
+        <div class="feature__icon">◆</div>
+        <h3>Encrypted ballots</h3>
+        <p class="muted mb-0">Each ballot is sealed with the election's public key (RSA-OAEP + AES-256-GCM). Only a tally ceremony can open it.</p>
+      </div>
+      <div class="feature reveal d1">
+        <div class="feature__icon">⛓</div>
+        <h3>Tamper-evident ledger</h3>
+        <p class="muted mb-0">Ballots are appended to a hash chain. Change one and every later link breaks — visibly.</p>
+      </div>
+      <div class="feature reveal d2">
+        <div class="feature__icon">✓</div>
+        <h3>Your receipt</h3>
+        <p class="muted mb-0">Get a receipt proving your ballot is in the count — revealing nothing about your choice.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature__icon">◈</div>
+        <h3>Aadhaar-anchored</h3>
+        <p class="muted mb-0">Identity is verified with Aadhaar OTP + biometrics matched inside UIDAI. Biometrics are never stored here.</p>
+      </div>
+      <div class="feature reveal d1">
+        <div class="feature__icon">☰</div>
+        <h3>One person, one vote</h3>
+        <p class="muted mb-0">A unique verified identity plus single-use tokens make stuffing and double voting detectable and blocked.</p>
+      </div>
+      <div class="feature reveal d2">
+        <div class="feature__icon">◎</div>
+        <h3>Privately by design</h3>
+        <p class="muted mb-0">Voter IDs (EPIC) and identity data are encrypted at rest; ballots carry no owner. No one can backtrack a vote.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-</div>
-</body>
-</html>
+<section class="section" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="container">
+    <div class="grid grid--2" style="align-items:center">
+      <div>
+        <span class="eyebrow">How it works</span>
+        <h2 class="mt-1">Four steps, from anywhere</h2>
+        <div class="steps mt-3">
+          <div class="step"><h3 class="mb-0">Sign in</h3><p class="muted mb-0">Password, plus an optional face match for convenience.</p></div>
+          <div class="step"><h3 class="mb-0">Verify identity</h3><p class="muted mb-0">Aadhaar OTP + a biometric (face, fingerprint or iris) matched 1:1 by UIDAI.</p></div>
+          <div class="step"><h3 class="mb-0">Cast your encrypted ballot</h3><p class="muted mb-0">Choose one candidate per contest. Your ballot is sealed and appended anonymously.</p></div>
+          <div class="step"><h3 class="mb-0">Verify your receipt</h3><p class="muted mb-0">Confirm inclusion on the public ledger at any time, without revealing your vote.</p></div>
+        </div>
+      </div>
+      <div class="card card--pad-lg reveal d1">
+        <span class="pill pill--accent">Ready to try it?</span>
+        <h3 class="mt-2">Run through the demo</h3>
+        <p class="muted">Sign in as a demo voter, verify with the mock Aadhaar flow, cast a ballot and check the ledger.</p>
+        <a class="btn btn--primary btn--block" href="{% url 'Vote:login' %}">Log in to vote</a>
+        <a class="btn btn--ghost btn--block mt-1" href="{% url 'Vote:face_index' %}">Register your face data</a>
+        <a class="btn btn--ghost btn--block mt-1" href="{% url 'Vote:bulletin' %}">Explore the public ledger</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card card--pad-lg">
+      <div class="grid grid--2">
+        <div>
+          <span class="eyebrow">Get in touch</span>
+          <h3 class="mt-1">Questions about the system?</h3>
+          <p class="muted mb-0">Reach out and we'll get back within 24 hours.</p>
+        </div>
+        <div>
+          <p class="mb-0"><span class="muted">Location</span><br>Sikkim Manipal Institute of Technology, Majitar</p>
+          <p class="mb-0 mt-2"><span class="muted">Email</span><br>srivastavaanurag79@gmail.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

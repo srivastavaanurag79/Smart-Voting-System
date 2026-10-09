@@ -1,39 +1,85 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Smart Voting System{% endblock %} · Smart Voting System</title>
+  <link rel="icon" href="{% static 'img/favicon.jpg' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="{% static 'css/app.css' %}" rel="stylesheet">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="{% url 'Vote:home' %}">
+        <span class="brand__mark">SV</span>
+        <span class="brand__name">Smart<span>Vote</span></span>
+      </a>
+      <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('is-open')">☰</button>
+      <nav class="nav" id="nav">
+        <a href="{% url 'Vote:home' %}" class="{% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">Home</a>
+        <a href="{% url 'Vote:vote' %}" class="{% if request.resolver_match.url_name == 'vote' %}is-active{% endif %}">Vote</a>
+        <a href="{% url 'Vote:results' %}" class="{% if request.resolver_match.url_name == 'results' %}is-active{% endif %}">Results</a>
+        <a href="{% url 'Vote:bulletin' %}" class="{% if request.resolver_match.url_name == 'bulletin' %}is-active{% endif %}">Ledger</a>
+        <a href="{% url 'Vote:verify_ballot' %}" class="{% if request.resolver_match.url_name == 'verify_ballot' %}is-active{% endif %}">Verify</a>
+        <a href="{% url 'Vote:about' %}" class="{% if request.resolver_match.url_name == 'about' %}is-active{% endif %}">About</a>
+        <details class="dropdown">
+          <summary>🌐 Language <span class="dropdown__caret">▼</span></summary>
+          <div class="dropdown__menu">
+            <a href="{% url 'Vote:home' %}" class="{% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">English <span class="code">EN</span></a>
+            <a href="{% url 'Vote:home_hindi' %}" class="{% if request.resolver_match.url_name == 'home_hindi' %}is-active{% endif %}">हिन्दी <span class="code">HI</span></a>
+            <a href="{% url 'Vote:home_tamil' %}" class="{% if request.resolver_match.url_name == 'home_tamil' %}is-active{% endif %}">தமிழ் <span class="code">TA</span></a>
+            <a href="{% url 'Vote:home_bengali' %}" class="{% if request.resolver_match.url_name == 'home_bengali' %}is-active{% endif %}">বাংলা <span class="code">BN</span></a>
+            <a href="{% url 'Vote:home_malayalam' %}" class="{% if request.resolver_match.url_name == 'home_malayalam' %}is-active{% endif %}">മലയാളം <span class="code">ML</span></a>
+          </div>
+        </details>
+        <span class="nav__divider"></span>
+        <a href="{% url 'Vote:face_index' %}" class="{% if request.resolver_match.url_name == 'face_index' %}is-active{% endif %}">Enrol face</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'Vote:logout' %}">Log out</a>
+        {% else %}
+          <a href="{% url 'Vote:face_login' %}">Face sign-in</a>
+          <a href="{% url 'Vote:login' %}" class="btn btn--primary" style="padding:.45rem .9rem">Log in</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
 
-  <head>
+  <main>
+    {% if messages %}
+      <div class="container" style="padding-top:1.25rem">
+        {% for message in messages %}
+          <div class="alert alert--{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="icon" href="{% static 'img/favicon.jpg' %}" />
-    <!-- Bootstrap core CSS -->
-    <link href="{% static 'bootstrap/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'style.css' %}" rel="stylesheet">
-    <!-- Bootstrap core JavaScript -->
-    <script src="{% static 'jquery.min.js' %}"></script>
-    <link href="https://fonts.googleapis.com/css?family=Muli:400,600" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
-
-  </head>
-
-  <body>
-
-    {% block content %}
-    {% endblock %}
-    <footer style="background-color: rgb(28, 28, 28);padding:2em 0;margin-top:-2.em;">
-      <p class="text-center" style="margin-bottom:0;color:#fff">&copy; Copyright <strong>Smart Voting System Team</strong>. All Rights Reserved</p>
-      <p class="text-center" style="margin-bottom:0;color:#fff">MADE WITH SKILL! NOT LOVE.</p>
-    </footer>
-    <!-- Custom scripts for this template -->
-    <script src="{% static 'bootstrap/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/particles.min.js' %}" ></script>
-    <script src="{% static 'script.js' %}"></script>
-
-  </body>
-
+  <footer class="footer">
+    <div class="footer__inner">
+      <div>
+        <div class="footer__brand">Smart Voting System</div>
+        <div style="font-size:.85rem">Encrypted, anonymous, verifiable — a prototype.</div>
+      </div>
+      <div style="font-size:.85rem;text-align:right">
+        <a href="{% url 'Vote:bulletin' %}">Public ledger</a> ·
+        <a href="{% url 'Vote:verify_ballot' %}">Verify a receipt</a> ·
+        <a href="{% url 'Vote:about' %}">About</a>
+        <div style="margin-top:.35rem;color:#6b7aa8">Not certified for a real election.</div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    document.addEventListener('click', function (e) {
+      document.querySelectorAll('details.dropdown[open]').forEach(function (d) {
+        if (!d.contains(e.target)) d.removeAttribute('open');
+      });
+    });
+  </script>
+</body>
 </html>

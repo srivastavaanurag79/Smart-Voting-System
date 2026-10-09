@@ -2,39 +2,46 @@
 {% load static %}
 {% block title %}Results{% endblock %}
 {% block content %}
-<div class="container" style="margin-top:2em;margin-bottom:4em;color:#111">
-  <h1 class="text-center">Election Results</h1>
-  <p class="text-center">{{ election.name }}</p>
-
-  {% if not published %}
-    <div class="alert alert-warning text-center">
-      Results are not published yet. An election official must run the tally,
-      which decrypts each ballot with the election private key.
-    </div>
-  {% endif %}
-
-  {% if user.is_staff %}
-    <form method="post" action="{% url 'Vote:tally' %}" class="text-center" style="margin-bottom:2em">
-      {% csrf_token %}
-      <button class="btn btn-warning">Run tally (officials)</button>
-    </form>
-  {% endif %}
-
-  {% for item in contests %}
-    <div class="panel panel-default">
-      <div class="panel-heading"><strong>{{ item.contest.position }}</strong></div>
-      <div class="panel-body">
-        {% for candidate in item.candidates %}
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6em">
-            <span>{{ candidate.name }}</span>
-            <strong>{{ candidate.votes }} votes</strong>
-          </div>
-        {% endfor %}
-        <canvas id="chart-{{ forloop.counter }}" height="120"></canvas>
+<section class="section">
+  <div class="container">
+    <div class="row row--between">
+      <div>
+        <span class="eyebrow">Results</span>
+        <h1 class="mt-1 mb-0">{{ election.name }}</h1>
       </div>
+      {% if user.is_staff %}
+        <form method="post" action="{% url 'Vote:tally' %}">
+          {% csrf_token %}
+          <button class="btn btn--accent">Run tally (officials)</button>
+        </form>
+      {% endif %}
     </div>
-  {% endfor %}
-</div>
+
+    {% if not published %}
+      <div class="alert alert--warning mt-3">
+        Results are not published yet. An election official must run the tally,
+        which decrypts each ballot with the election private key.
+      </div>
+    {% endif %}
+
+    <div class="grid grid--2 mt-3">
+      {% for item in contests %}
+        <div class="panel reveal">
+          <div class="panel__head">{{ item.contest.position }}</div>
+          <div class="panel__body">
+            {% for candidate in item.candidates %}
+              <div class="result-row">
+                <span>{{ candidate.name }}</span>
+                <strong class="mono">{{ candidate.votes }} votes</strong>
+              </div>
+            {% endfor %}
+            <div class="mt-2"><canvas id="chart-{{ forloop.counter }}" height="120"></canvas></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script>
@@ -46,13 +53,15 @@ data.forEach((block, i) => {
     type: 'bar',
     data: {
       labels: block.labels,
-      datasets: [{ label: block.contest, data: block.votes,
-                   backgroundColor: 'rgba(4,124,42,0.55)' }]
+      datasets: [{ data: block.votes, backgroundColor: 'rgba(42,75,215,0.75)', borderRadius: 6 }]
     },
     options: {
       responsive: true,
       plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#eef1f7' } },
+        x: { grid: { display: false } }
+      }
     }
   });
 });

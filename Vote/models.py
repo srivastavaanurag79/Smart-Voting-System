@@ -111,6 +111,16 @@ class Ballot(models.Model):
     class Meta:
         ordering = ["index"]
 
+    @property
+    def public_id(self) -> str:
+        """A short, human-readable identifier derived from the receipt.
+
+        Deterministic, so it can be quoted and looked up, but it reveals
+        nothing about the vote (it is derived from the ciphertext hash).
+        """
+        code = self.receipt_hash[:8].upper()
+        return f"SV-{code[:4]}-{code[4:]}"
+
     def __str__(self):
         return f"ballot #{self.index}"
 
